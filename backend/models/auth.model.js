@@ -16,7 +16,7 @@ const accountSchema = mongoose.Schema(
         },
         tournaments: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'tournaments' 
+            ref: 'Tournaments' 
         }],
         birthday: {
             type: Date
@@ -27,4 +27,4 @@ const accountSchema = mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model('Account', accountSchema);
+module.exports = mongoose.model('Auth', accountSchema);

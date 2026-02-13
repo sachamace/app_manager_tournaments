@@ -4,7 +4,7 @@ const teamSchema = mongoose.Schema(
     {
         tournament: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'tournaments',
+            ref: 'Tournaments',
             required: true
         },
         nom:{
@@ -20,11 +20,11 @@ const teamSchema = mongoose.Schema(
         },
         captain: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'players'
+            ref: 'Players'
         },
         players: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'players'
+            ref: 'Players'
         }]
     },
     {
@@ -33,4 +33,4 @@ const teamSchema = mongoose.Schema(
 );
 
 
-module.exports = mongoose.model('teams',teamSchema);
+module.exports = mongoose.model('Teams',teamSchema);

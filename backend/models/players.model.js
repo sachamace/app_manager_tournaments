@@ -8,7 +8,7 @@ const playerSchema = mongoose.Schema(
         },
         team: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'teams'
+            ref: 'Teams'
         }
     },
     {
@@ -17,4 +17,4 @@ const playerSchema = mongoose.Schema(
 );
 
 
-module.exports = mongoose.model('players',playerSchema);
+module.exports = mongoose.model('Players',playerSchema);

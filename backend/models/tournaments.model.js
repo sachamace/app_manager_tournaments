@@ -15,11 +15,11 @@ const tournamentSchema = mongoose.Schema(
         },
         list_teams: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'teams' 
+            ref: 'Teams' 
         }],
         account: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Account',
+            ref: 'Auth',
             required: true
         }
     },
@@ -29,4 +29,4 @@ const tournamentSchema = mongoose.Schema(
 );
 
 
-module.exports = mongoose.model('tournaments',tournamentSchema);
+module.exports = mongoose.model('Tournaments',tournamentSchema);

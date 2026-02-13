@@ -4,26 +4,26 @@ const matchesSchema = mongoose.Schema(
     {
         tournament: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'tournaments',
+            ref: 'Tournaments',
             required: true
         },
         teams: {
             type: [{
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'teams' 
+                ref: 'Teams' 
             }],
             validate: [(val) => val.length <= 2, 'Un match ne peut avoir que 2 équipes maximum']
         },
         winner: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'teams'
+            ref: 'Teams'
         },
         loser: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'teams'
+            ref: 'Teams'
         },
         score: [{
-            team: { type: mongoose.Schema.Types.ObjectId, ref: 'teams' },
+            team: { type: mongoose.Schema.Types.ObjectId, ref: 'Teams' },
             points: Number
         }]
     },
