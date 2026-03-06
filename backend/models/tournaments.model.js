@@ -21,7 +21,11 @@ const tournamentSchema = mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Auth',
             required: true
-        }
+        },
+        classement: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Teams' 
+        }]
     },
     {
         timestamps: true,
