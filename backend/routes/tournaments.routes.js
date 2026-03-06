@@ -12,3 +12,7 @@ router.get("/:id/standings",getRanking);
 // POST
 
 // PUT
+
+
+
+module.exports = router 
