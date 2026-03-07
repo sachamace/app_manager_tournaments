@@ -11,7 +11,7 @@ const tournamentSchema = mongoose.Schema(
             required: true
         },
         cashprize: {
-            type: Number,
+            type: String,
         },
         list_teams: [{
             type: mongoose.Schema.Types.ObjectId,

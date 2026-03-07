@@ -25,6 +25,10 @@ const teamSchema = mongoose.Schema(
         players: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Players'
+        }],
+        matches: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref : 'Matches'
         }]
     },
     {

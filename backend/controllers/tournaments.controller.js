@@ -76,7 +76,7 @@ module.exports.addTeamsAtTournament = async(req,res) => {
         }
 
         return res.status(200).json({
-            message: "Teams ajouté avec succès !",
+            message: "Teams ajouté dans le tournoi avec succès !",
             data: updatedDocument
         });
     } catch (error) {
