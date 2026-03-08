@@ -66,24 +66,21 @@ module.exports.addPlayerInTeam = async(req,res) => {
     try {
         const userId = req.params.id
         const elementIdToAdd = req.body
-        const updateTeam = await TeamsModel.finByIdAndUpdate(
-            userId,
-            {
-                $addToSet: {players: elementIdToAdd}
-            },
-            {
-                new: true,
-                runValidators: true
-            }
-        );
-        
-        if(!updateTeam){
+        const team = await TeamsModel.findById(userId);
+
+        if (!team) {
             return res.status(404).json({ message: "La team est introuvable." });
         }
+        
+        const updatedTeam = await TeamsModel.findByIdAndUpdate(
+            userId,
+            { $addToSet: { players: elementIdToAdd } },
+            { new: true, runValidators: true }
+        );
 
         return res.status(200).json({
             message: "Player ajouté dans la team avec succès !",
-            data: updatedDocument
+            data: updatedTeam 
         });
     } catch (error) {
         console.error(error);
@@ -95,35 +92,35 @@ module.exports.addCaptainInTeam = async(req,res) => {
     try {
         const userId = req.params.id
         const elementIdToAdd = req.body
-        const updateTeam = await TeamsModel.finByIdAndUpdate(
-            userId,
-            {
-                $addToSet: {captain: elementIdToAdd}
-            },
-            {
-                new: true,
-                runValidators: true
-            }
-        );
-        const existingCaptain = await TeamsModel.findOne({
-            _id: userId, 
-            captain: { $exists: true, $ne: null, $ne: "" }
-        });
-        if (existingCaptain) {
+        const team = await TeamsModel.findById(userId);
+
+        if (!team) {
+            return res.status(404).json({ message: "La team est introuvable." });
+        }
+
+        if (team.captain && team.captain.length > 0) {
             return res.status(400).json({ 
                 message: "Il existe déjà un capitaine dans votre équipe." 
             });
         }
-        if(!updateTeam){
-            return res.status(404).json({ message: "La team est introuvable." });
-        }
+        const updatedTeam = await TeamsModel.findByIdAndUpdate(
+            userId,
+            { $addToSet: { captain: elementIdToAdd } },
+            { new: true, runValidators: true }
+        );
 
         return res.status(200).json({
             message: "Un capitaine est ajouté dans la team avec succès !",
-            data: updatedDocument
+            data: updatedTeam 
         });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
+
+
+
+
+
+
