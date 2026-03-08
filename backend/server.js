@@ -18,6 +18,6 @@ app.use("/tournaments",require("./routes/tournaments.routes")); // J'utilise tou
 app.use("/teams",require("./routes/teams.routes")); // J'utilise teams
 app.use("/auth",require("./routes/auth.routes")); // J'utilise auth
 //app.use("/matches",require("./routes/matches.routes")); // J'utilise matches
-//app.use("/players",require("./routes/players.routes")); // J'utilise players
+app.use("/players",require("./routes/players.routes")); // J'utilise players
 
 app.listen(port, () => console.log("Le serveur a démarré au N port " + port));
