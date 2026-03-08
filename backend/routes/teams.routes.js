@@ -7,14 +7,14 @@ const router = express.Router();
 // GET
 router.get("/",getTeams);
 router.get("/:id",getTeam);
-router.get("/:id/matches",getHistoricalMatches);
-router.get("/:id/players",getPlayerInTeam);
-router.get("/:id/captain",getCaptainTeam);
+router.get("/matches/:id",getHistoricalMatches);
+router.get("/players/:id",getPlayerInTeam);
+router.get("/captain/:id",getCaptainTeam);
 
 // POST 
 router.post("/",createTeam);
-router.post("/:id/players",addPlayerInTeam);
-router.post("/:id/captain",addCaptainInTeam);
+router.post("/players/id",addPlayerInTeam);
+router.post("/captain/:id",addCaptainInTeam);
 
 // PATCH
 
