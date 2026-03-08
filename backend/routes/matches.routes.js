@@ -1,16 +1,16 @@
 const express = require('express');
-const{ } = require('../controllers/matches.controller');
+const{ getMatchesInTournaments, getMatch, updateMatchScore } = require('../controllers/matches.controller');
 
 const router = express.Router(); 
 
 // GET 
-
-
+router.get("/tournaments/:id",getMatchesInTournaments)
+router.get("/:id",getMatch);
 // POST
 
 
 // PATCH
-
+router.patch("/:id",updateMatchScore);
 
 // DELETE
 
