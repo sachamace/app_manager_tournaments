@@ -43,24 +43,24 @@ module.exports.updateMatchScore = async (req, res) => {
         const matchId = req.params.id;
         const { scores } = req.body;
 
-        // 1. Vérification du format envoyé par le Front-end
+
         if (!scores || !Array.isArray(scores) || scores.length !== 2) {
             return res.status(400).json({ message: "Le format est invalide ou il manque des scores." });
         }
 
-        // 2. On récupère le match actuel en base de données
+
         const match = await MatchesModel.findById(matchId);
         if (!match) {
             return res.status(404).json({ message: "Match introuvable." });
         }
 
-        // 3. On extrait les ID et les points envoyés dans le Body
+
         const team1_Id = scores[0].team;
         const team2_Id = scores[1].team;
         const points1 = Number(scores[0].points);
         const points2 = Number(scores[1].points);
 
-        // 4. SÉCURITÉ : Vérifier que les équipes envoyées jouent bien ce match
+
         const matchTeamsStr = match.teams.map(id => id.toString());
 
         if (!matchTeamsStr.includes(team1_Id) || !matchTeamsStr.includes(team2_Id)) {
@@ -69,7 +69,7 @@ module.exports.updateMatchScore = async (req, res) => {
             });
         }
 
-        // 5. ALGORITHME : Déterminer le gagnant et le perdant
+
         let winner = null;
         let loser = null;
 
@@ -81,12 +81,12 @@ module.exports.updateMatchScore = async (req, res) => {
             loser = team1_Id;
         } 
 
-        // 6. On met à jour l'objet "match" qu'on a récupéré
+
         match.score = scores;
         match.winner = winner;
         match.loser = loser;
 
-        // 7. On sauvegarde les modifications en base de données
+
         const updatedMatch = await match.save();
 
         return res.status(200).json({

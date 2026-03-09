@@ -25,7 +25,9 @@ const matchesSchema = mongoose.Schema(
         score: [{
             team: { type: mongoose.Schema.Types.ObjectId, ref: 'Teams' },
             points: Number
-        }]
+        }],
+        round: { type: Number, default: 1 }, // Ex: 1 = 8eme, 2 = Quart, 3 = Demi...
+        matchNumber: { type: Number }        // Ex: 1, 2, 3, 4 (L'ordre d'affichage pour le front)
     },
     {
         timestamps: true,

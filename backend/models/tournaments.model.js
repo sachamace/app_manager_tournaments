@@ -7,7 +7,8 @@ const tournamentSchema = mongoose.Schema(
         cashprize: { type: String },
         list_teams: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Teams' }],
         account: { type: mongoose.Schema.Types.ObjectId, ref: 'Auth', required: true },
-        classement: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Teams' }]
+        classement: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Teams' }],
+        statut : {type: String , required: true}
     },
     {
         timestamps: true,
