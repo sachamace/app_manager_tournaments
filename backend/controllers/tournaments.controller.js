@@ -71,7 +71,7 @@ module.exports.addTeamsAtTournament = async(req,res) => {
     try {
         const userId = req.params.id
         const elementIdToAdd = req.body
-        const updateTournament = await TournamentsModel.finByIdAndUpdate(
+        const updateTournament = await TournamentsModel.findByIdAndUpdate(
             userId,
             {
                 $addToSet: {list_teams: elementIdToAdd}
@@ -88,7 +88,7 @@ module.exports.addTeamsAtTournament = async(req,res) => {
 
         return res.status(200).json({
             message: "Teams ajouté dans le tournoi avec succès !",
-            data: updatedDocument
+            data: updateTournament
         });
     } catch (error) {
         console.error(error);

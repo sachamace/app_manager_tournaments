@@ -11,7 +11,7 @@ router.get("/:id/participants",getTeamsRegister);
 router.get("/:id/standings",getRanking);
 // POST
 router.post("/",addTournament);
-router.post("/:id/particpants",addTeamsAtTournament);
+router.post("/:id/participants",addTeamsAtTournament);
 router.post("/:id/start",startTournament);
 router.post("/:id/reset",cancelTournament);
 router.post('/:id/next-round', generateNextRound);
