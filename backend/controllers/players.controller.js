@@ -101,6 +101,7 @@ try {
 
 module.exports.updatePlayer = async(req,res) => {
     try {
+        const playerId = req.params.id;
         const { pseudo, team } = req.body;
 
         const updateData = {};

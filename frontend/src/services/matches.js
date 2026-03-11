@@ -12,6 +12,21 @@ export const fetchAllMatches = async () => {
     }
 };
 
+export const getMatchesInTournaments = async (id) => {
+    try {
+        const response = await fetch(`${API_URL}/matches/tournaments/${id}`);
+        
+        if (!response.ok) {
+            throw new Error("Tout les matchs du tournoi est introuvable");
+        }
+        
+        const data = await response.json();
+        return data; 
+    } catch (error) {
+        console.error("Erreur lors de la récupération des matchs du tournoi:", error);
+        return null;
+    }
+};
 // POST 
 
 
