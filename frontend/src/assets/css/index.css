@@ -1,0 +1,199 @@
+/* frontend/src/index.css */
+
+/* --- VARIABLES GLOBALES (Couleurs) --- */
+:root {
+  --bg-main: #121214;        /* Fond de la page (très sombre) */
+  --bg-card: #202024;        /* Fond des cartes et formulaires */
+  --bg-input: #121214;       /* Fond des champs de texte */
+  --text-main: #e1e1e6;      /* Texte principal (blanc cassé) */
+  --text-muted: #a8a8b3;     /* Texte secondaire (gris clair) */
+  --accent-color: #8257e5;   /* Couleur d'accentuation (violet gaming) */
+  --accent-hover: #9466ff;   /* Couleur au survol */
+  --border-color: #323238;   /* Bordures discrètes */
+  --danger: #e25858;
+  --success: #04d361;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* --- STRUCTURE GÉNÉRALE --- */
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.page-title {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+/* --- BOUTONS --- */
+.btn-primary {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+}
+
+.btn-danger {
+  background-color: var(--danger);
+  /* ... mêmes propriétés que btn-primary ... */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* --- PAGE DE CONNEXION (Login / Register) --- */
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.auth-card {
+  background-color: var(--bg-card);
+  padding: 40px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border-color);
+}
+
+.auth-card h2 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-muted);
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-main);
+  box-sizing: border-box; /* Pour que le padding ne dépasse pas */
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+/* --- PAGE LISTE DES TOURNOIS --- */
+.tournaments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.tournament-card {
+  background-color: var(--bg-card);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  padding: 24px;
+  transition: transform 0.2s;
+}
+
+.tournament-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-color);
+}
+
+.tournament-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.tournament-header h3 {
+  margin: 0;
+  color: var(--accent-color);
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.badge.active { background-color: rgba(4, 211, 97, 0.2); color: var(--success); }
+.badge.pending { background-color: rgba(168, 168, 179, 0.2); color: var(--text-muted); }
+
+.tournament-info p {
+  margin: 8px 0;
+  color: var(--text-muted);
+}
+
+/* --- PAGE DÉTAIL D'UN TOURNOI --- */
+.detail-header-card {
+  background-color: var(--bg-card);
+  padding: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.info-box {
+  background-color: var(--bg-input);
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid var(--border-color);
+}
+
+.info-box span {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.info-box strong {
+  font-size: 1.2rem;
+  color: var(--accent-color);
+}

@@ -1,41 +1,62 @@
-// frontend/src/pages/Tournaments.jsx
+
 import { useState, useEffect } from 'react';
 import { fetchAllTournaments } from '../services/tournaments';
-
+import { Link } from 'react-router-dom';
+import '../assets/css/index.css';
 export default function Tournaments() {
-    // 1. On crée une variable d'état 'tournaments' (vide au départ)
     const [tournaments, setTournaments] = useState([]);
 
-    // 2. Ce code s'exécute une seule fois au chargement du composant
+    // Ce qui va se appaser lors du chargement de la page 
     useEffect(() => {
         const loadTournaments = async () => {
             const data = await fetchAllTournaments();
-            setTournaments(data); // On sauvegarde les données reçues dans l'état
+            setTournaments(data); 
         };
         
         loadTournaments();
-    }, []); // Le tableau vide [] signifie "exécute ceci uniquement au montage de la page"
+    }, []); 
 
-    // 3. On affiche le HTML (JSX)
+    
     return (
-        <div>
-            <h1>Liste de mes Tournois</h1>
+    <div className="page-container">
+            <h1 className="page-title">Liste de mes Tournois</h1>
             
-            {/* Si on n'a pas encore de données, on affiche un message */}
             {tournaments.length === 0 ? (
-                <p>Chargement des tournois...</p>
+                <p style={{ color: 'var(--text-muted)' }}>⏳ Chargement des tournois...</p>
             ) : (
-                // Sinon, on boucle sur notre tableau pour afficher chaque tournoi
-                <ul>
+                <div className="tournaments-grid">
+                    
                     {tournaments.map((tournament) => (
-                        <li key={tournament._id} style={{ border: '1px solid gray', margin: '10px', padding: '10px' }}>
-                            <h3>Jeu : {tournament.games}</h3>
-                            <p>Format : {tournament.tree_type}</p>
-                            <p>Statut : {tournament.statut}</p>
-                        </li>
+                        <div key={tournament._id} className="tournament-card">
+                            
+                            <div className="tournament-header">
+                                <h3>{tournament.games}</h3>
+                                
+                                <span className={`badge ${tournament.statut === 'en_cours' ? 'active' : 'pending'}`}>
+                                    {tournament.statut}
+                                </span>
+                            </div>
+                            
+                            <div className="tournament-info">
+                                <p><strong>Format :</strong> {tournament.tree_type}</p>
+                                
+                                {tournament.cashprize && (
+                                    <p><strong>Cashprize :</strong> {tournament.cashprize}</p>
+                                )}
+                            </div>
+                            <Link 
+                                to={`/tournaments/${tournament._id}`} 
+                                className="btn-primary" 
+                                style={{ display: 'block', textAlign: 'center', marginTop: '15px', textDecoration: 'none', boxSizing: 'border-box' }}
+                            >
+                                Voir les détails
+                            </Link>
+                            
+                        </div>
                     ))}
-                </ul>
+                    
+                </div>
             )}
         </div>
-    );
+  );
 }
