@@ -19,7 +19,11 @@ module.exports.getTournaments = async(req,res) =>{
     const tournaments = await TournamentsModel.find();
     res.status(200).json(tournaments);
 };
-
+module.exports.getTournamentByAccount  = async(req,res) =>{
+    const accountId = req.params.accountId;
+    const tournaments = await TournamentsModel.find({account: accountId});
+    res.status(200).json(tournaments);
+};
 module.exports.getTournament = async(req,res) =>{
     const tournament = await TournamentsModel.findById(req.params.id);
     if (!tournament) {

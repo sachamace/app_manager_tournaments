@@ -1,4 +1,4 @@
-// frontend/src/services/tournaments.js
+
 import { API_URL } from './api';
 
 
@@ -13,6 +13,14 @@ export const fetchAllTournaments = async () => {
         return [];
     }
 };
+
+
+export const fetchMyTournaments = async (accountId) => {
+    const response = await fetch(`${API_URL}/tournaments/account/${accountId}`);
+    const data = await response.json();
+    return data;
+};
+
 export const getTournamentById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/tournaments/${id}`);

@@ -3,7 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useContext ,useState, useEffect} from 'react';
 import { AuthContext } from '../context/AuthContext';
 import '../assets/css/index.css';
+
 export default function Header() {
+
     // On appelle notre mémoire globale !
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate(); 
@@ -50,11 +52,10 @@ export default function Header() {
                             border: 'none',
                             fontSize: '1.5rem',
                             cursor: 'pointer',
-                            marginRight: '15px', // Espace entre le soleil et le pseudo
+                            marginRight: '15px',
                         }}
                         title={isLightMode ? "Passer en mode sombre" : "Passer en mode clair"}
                     >
-                        {/* Si on est en mode clair, on affiche une Lune, sinon un Soleil */}
                         {isLightMode ? '🌙' : '☀️'}
                     </button>
 

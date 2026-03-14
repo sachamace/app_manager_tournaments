@@ -1,11 +1,12 @@
 const express = require('express');
-const { getTournaments, getTournament, getBracket, getTeamsRegister, getRanking, addTournament, addTeamsAtTournament, startTournament, cancelTournament ,generateNextRound,unsubscribeTeam, deleteTournament} = require('../controllers/tournaments.controller');
+const { getTournaments, getTournament, getBracket, getTeamsRegister, getRanking, addTournament, addTeamsAtTournament, startTournament, cancelTournament ,generateNextRound,unsubscribeTeam, deleteTournament, getTournamentByAccount} = require('../controllers/tournaments.controller');
 
 const router = express.Router(); // Création d'un router qui va agir pour tout les tournaments
 
 // GET
 router.get("/",getTournaments);
 router.get("/:id",getTournament);
+router.get("/account/:accountId", getTournamentsByAccount);
 router.get("/:id/bracket",getBracket);
 router.get("/:id/participants",getTeamsRegister);
 router.get("/:id/standings",getRanking);

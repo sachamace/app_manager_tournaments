@@ -1,28 +1,52 @@
 
-import { useState, useEffect } from 'react';
-import { fetchAllTournaments } from '../services/tournaments';
+import { useState, useEffect, useContext } from 'react';
+import { fetchMyTournaments } from '../services/tournaments'; // 1. On importe la nouvelle fonction
+import { AuthContext } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import '../assets/css/index.css';
 export default function Tournaments() {
+
+    const {user} = useContext(AuthContext);
+
     const [tournaments, setTournaments] = useState([]);
 
     // Ce qui va se appaser lors du chargement de la page 
     useEffect(() => {
         const loadTournaments = async () => {
-            const data = await fetchAllTournaments();
-            setTournaments(data); 
+            if (user && user._id) { 
+                // On passe son ID à notre service
+                const data = await fetchMyTournaments(user._id); 
+                setTournaments(data);
+            }
         };
         
         loadTournaments();
-    }, []); 
+    }, [user]); 
 
-    
+    if (!user) {
+        return (
+            <div className="page-container" style={{ textAlign: 'center' }}>
+                <h1 className="page-title">Mes Tournois</h1>
+                <p style={{ color: 'var(--text-muted)' }}>
+                    Vous devez être connecté pour voir vos tournois.
+                </p>
+                <Link to="/login" className="btn-primary" style={{ textDecoration: 'none', display: 'inline-block', marginTop: '20px' }}>
+                    Se connecter
+                </Link>
+            </div>
+        );
+    }
+
     return (
-    <div className="page-container">
-            <h1 className="page-title">Liste de mes Tournois</h1>
+        <div className="page-container">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h1 className="page-title">Mes Tournois</h1>
+                {/* Un futur bouton pour créer un tournoi ! */}
+                <button className="btn-primary" style={{ width: 'auto' }}>+ Créer un tournoi</button>
+            </div>
             
             {tournaments.length === 0 ? (
-                <p style={{ color: 'var(--text-muted)' }}>⏳ Chargement des tournois...</p>
+                <p style={{ color: 'var(--text-muted)' }}>Vous n'avez pas encore créé de tournoi.</p>
             ) : (
                 <div className="tournaments-grid">
                     
