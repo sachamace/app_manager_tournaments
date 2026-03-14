@@ -21,7 +21,18 @@ body {
   color: var(--text-main);
   font-family: 'Inter', system-ui, sans-serif;
 }
-
+body.light-mode {
+  --bg-main: #f3f4f6;        /* Un gris très clair pour le fond */
+  --bg-card: #ffffff;        /* Blanc pur pour les cartes */
+  --bg-input: #f9fafb;       /* Un fond doux pour les inputs */
+  --text-main: #1f2937;      /* Gris très foncé/noir pour le texte */
+  --text-muted: #6b7280;     /* Gris moyen pour les sous-titres */
+  --border-color: #e5e7eb;   /* Bordures gris clair */
+  /* Note : On ne redéfinit pas --accent-color (le violet), il restera le même ! */
+}
+body, .main-header, .auth-card, .tournament-card, .detail-header-card, .form-input {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
 /* --- STRUCTURE GÉNÉRALE --- */
 .page-container {
   max-width: 1200px;

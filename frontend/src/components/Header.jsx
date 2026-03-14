@@ -1,12 +1,30 @@
-// frontend/src/components/Header.jsx
+
 import { Link, useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext ,useState, useEffect} from 'react';
 import { AuthContext } from '../context/AuthContext';
 import '../assets/css/index.css';
 export default function Header() {
     // On appelle notre mémoire globale !
     const { user, logout } = useContext(AuthContext);
-    const navigate = useNavigate(); // Permet de rediriger l'utilisateur après une action
+    const navigate = useNavigate(); 
+
+    const [isLightMode, setIsLightMode] = useState(() => {
+        return localStorage.getItem('theme') === 'light';
+    });
+
+    useEffect(() => {
+        if (isLightMode) {
+            document.body.classList.add('light-mode'); 
+            localStorage.setItem('theme', 'light');    
+        } else {
+            document.body.classList.remove('light-mode'); 
+            localStorage.setItem('theme', 'dark');        
+        }
+    }, [isLightMode]);
+
+    const toggleTheme = () => {
+        setIsLightMode(!isLightMode); 
+    };
 
     const handleLogout = () => {
         logout(); // On vide le Context et le LocalStorage
@@ -24,6 +42,22 @@ export default function Header() {
 
                 {/* 3. La zone Utilisateur (Dynamique !) */}
                 <div className="header-auth">
+
+                    <button 
+                        onClick={toggleTheme} 
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            fontSize: '1.5rem',
+                            cursor: 'pointer',
+                            marginRight: '15px', // Espace entre le soleil et le pseudo
+                        }}
+                        title={isLightMode ? "Passer en mode sombre" : "Passer en mode clair"}
+                    >
+                        {/* Si on est en mode clair, on affiche une Lune, sinon un Soleil */}
+                        {isLightMode ? '🌙' : '☀️'}
+                    </button>
+
                     {user ? (
                         // SI CONNECTÉ : On affiche son pseudo et le bouton déconnexion
                         <>
