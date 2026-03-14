@@ -159,6 +159,53 @@ body {
   color: var(--text-muted);
 }
 
+/* --- HEADER --- */
+.main-header {
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  padding: 15px 0;
+  position: sticky; /* Permet au menu de rester visible au scroll */
+  top: 0;
+  z-index: 100;
+}
+
+.header-container {
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.header-nav {
+  display: flex;
+  gap: 20px;
+}
+
+.header-nav a {
+  color: var(--text-main);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.header-nav a:hover {
+  color: var(--accent-hover);
+}
+
+.header-auth {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 /* --- PAGE DÉTAIL D'UN TOURNOI --- */
 .detail-header-card {
   background-color: var(--bg-card);

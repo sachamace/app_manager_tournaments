@@ -1,4 +1,8 @@
+// Import Router 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+// Import composant 
+import Header from './components/Header';
+// Import page 
 import Tournaments from './pages/Tournaments';
 import TournamentDetail from './pages/TournamentDetail';
 import Login from './pages/Login';
@@ -6,6 +10,7 @@ import Login from './pages/Login';
 function App() {
   return (
     <Router>
+      <Header />
       <Routes>
         {/* On définit nos différentes pages et leurs URLs */}
         <Route path="/login" element={<Login />} />
