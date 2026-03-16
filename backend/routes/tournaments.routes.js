@@ -6,7 +6,7 @@ const router = express.Router(); // Création d'un router qui va agir pour tout 
 // GET
 router.get("/",getTournaments);
 router.get("/:id",getTournament);
-router.get("/account/:accountId", getTournamentsByAccount);
+router.get("/account/:accountId", getTournamentByAccount);
 router.get("/:id/bracket",getBracket);
 router.get("/:id/participants",getTeamsRegister);
 router.get("/:id/standings",getRanking);

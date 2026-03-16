@@ -73,13 +73,23 @@ export default function Header() {
                         </>
                     ) : (
                         // SI NON CONNECTÉ : On affiche le bouton pour se connecter
-                        <Link 
-                            to="/login" 
-                            className="btn-primary" 
-                            style={{ padding: '8px 16px', fontSize: '0.9rem', textDecoration: 'none' }}
-                        >
-                            Se connecter
-                        </Link>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <Link 
+                                to="/login" 
+                                className="btn-primary" 
+                                style={{ padding: '8px 16px', fontSize: '0.9rem', textDecoration: 'none', textAlign : 'center' ,  }}
+                            >
+                                Se connecter
+                            </Link>
+
+                            <Link 
+                                to="/register" 
+                                className="btn-primary" 
+                                style={{ padding: '8px 16px', fontSize: '0.9rem', textDecoration: 'none' , textAlign : 'center'}}
+                            >
+                                Création de compte
+                            </Link>
+                        </div>
                     )}
                 </div>
             </div>

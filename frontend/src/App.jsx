@@ -6,7 +6,7 @@ import Header from './components/Header';
 import Tournaments from './pages/Tournaments';
 import TournamentDetail from './pages/TournamentDetail';
 import Login from './pages/Login';
-
+import Register from './pages/Register';
 function App() {
   return (
     <Router>
@@ -15,7 +15,7 @@ function App() {
         {/* On définit nos différentes pages et leurs URLs */}
         <Route path="/login" element={<Login />} />
         <Route path="/tournaments" element={<Tournaments />} />
-        
+        <Route path="/register" element = {<Register/>}/>
         {/* Le fameux :id est une variable dynamique dans l'URL ! */}
         <Route path="/tournaments/:id" element={<TournamentDetail />} />
 

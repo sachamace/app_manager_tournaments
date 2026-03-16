@@ -26,7 +26,7 @@ export default function Tournaments() {
     if (!user) {
         return (
             <div className="page-container" style={{ textAlign: 'center' }}>
-                <h1 className="page-title">Mes Tournois</h1>
+                <h1 className="tournament-header">Mes Tournois</h1>
                 <p style={{ color: 'var(--text-muted)' }}>
                     Vous devez être connecté pour voir vos tournois.
                 </p>
@@ -40,7 +40,7 @@ export default function Tournaments() {
     return (
         <div className="page-container">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h1 className="page-title">Mes Tournois</h1>
+                <h1 className="tournament-header">Mes Tournois</h1>
                 {/* Un futur bouton pour créer un tournoi ! */}
                 <button className="btn-primary" style={{ width: 'auto' }}>+ Créer un tournoi</button>
             </div>

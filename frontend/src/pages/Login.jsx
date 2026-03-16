@@ -16,16 +16,16 @@ export default function Login() {
 
         try {
 
-            const reponseBackend = await connectAuth({ mail, mdp });
-            
-            login(reponseBackend.login); 
-            
-            alert("Connexion réussie ! Bienvenue.");
+          const reponseBackend = await connectAuth({ mail, mdp });
+          
+          login(reponseBackend.user); 
+          
+          alert("Connexion réussie ! Bienvenue.");
 
-            
+          window.location.href = "/";
 
         } catch (error) {
-            alert("Erreur : Mauvais mail ou mot de passe.");
+          alert("Erreur : Mauvais mail ou mot de passe.");
         }
     };
 
