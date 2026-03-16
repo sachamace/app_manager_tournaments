@@ -30,7 +30,7 @@ export const fetchOneAuth = async (id) => {
 };
 
 // POST
-export const setAuth = async (pseudo,email,birthday,mdp) => {
+export const setAuth = async (pseudo,mail,mdp,birthday) => {
     try {
 
         const response = await fetch(`${API_URL}/auth/register`, {
@@ -39,7 +39,7 @@ export const setAuth = async (pseudo,email,birthday,mdp) => {
                 'Content-Type': 'application/json', 
             },
 
-            body: JSON.stringify(pseudo,email,birthday,mdp),
+            body: JSON.stringify({ pseudo, mail, mdp ,birthday}),
         });
 
         const data = await response.json();
@@ -52,7 +52,7 @@ export const setAuth = async (pseudo,email,birthday,mdp) => {
 };
 
 
-export const connectAuth = async (login,mdp) => {
+export const connectAuth = async (mail,mdp) => {
     try {
 
         const response = await fetch(`${API_URL}/auth/login`, {
@@ -61,8 +61,12 @@ export const connectAuth = async (login,mdp) => {
                 'Content-Type': 'application/json', 
             },
 
-            body: JSON.stringify(login,mdp),
+            body: JSON.stringify( {mail , mdp} ),
         });
+
+        if (!response.ok) {
+            throw new Error("Identifiants incorrects");
+        }
 
         const data = await response.json();
         return data; 
@@ -73,23 +77,46 @@ export const connectAuth = async (login,mdp) => {
     }
 };
 // PATCH
-export const changePassword = async (id,newMdp) => {
+export const updateAuth = async (id, data) => {
     try {
-        // 1. On met l'ID dans l'URL
-        const response = await fetch(`${API_URL}/players/pseudo/${id}`, {
-            method: 'PATCH', // 2. On indique qu'on veut MODIFIER
+        const response = await fetch(`${API_URL}/auth/${id}`, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
-            // 3. On envoie les nouvelles données dans le body
-            body: JSON.stringify({ mdp: newMdp }), 
+            body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+        if (!response.ok) {
+            throw new Error(result.message || "Erreur lors de la mise à jour du compte.");
+        }
+        return result;
+
+    } catch (error) {
+        console.error("Erreur lors de la mise à jour du compte:", error);
+        throw error;
+    }
+};
+
+export const changePassword = async (id, newMdp) => {
+    try {
+        const response = await fetch(`${API_URL}/auth/${id}`, {
+            method: 'PATCH', 
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ mdp: newMdp }),
         });
 
         const data = await response.json();
-        return data; 
-        
+        if (!response.ok) {
+            throw new Error(data.message || "Erreur lors de la mise à jour du mot de passe.");
+        }
+        return data;
+
     } catch (error) {
-        console.error("Erreur lors de la mise à jour du mot de pase:", error);
+        console.error("Erreur lors de la mise à jour du mot de passe:", error);
         throw error;
     }
 };

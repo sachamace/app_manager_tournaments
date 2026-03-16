@@ -1,9 +1,9 @@
 
-import { useState, useContext } from 'react';
-import { connectAuth, setAuth } from '../services/auth'; // Le Service
-import { AuthContext } from '../context/AuthContext'; // La mémoire
+import { useState} from 'react';
+import { setAuth } from '../services/auth'; // Le Service
+import { useNavigate } from 'react-router-dom';
 import '../assets/css/index.css';
-import '../assets/js/date.js';
+//import '../assets/js/date.js';
 export default function Register() {
 
     const [mail, setMail] = useState('');
@@ -11,23 +11,16 @@ export default function Register() {
     const [pseudo, setPseudo] = useState('');
     const [birthday, setBirthday] = useState('');
 
-    const { login } = useContext(AuthContext);
-
-
+    const navigate = useNavigate();
     const handleSubmit = async (e) => {
-        e.preventDefault(); 
-
+        e.preventDefault()
         try {
-
-            const reponseSet = await setAuth({pseudo,mail,mdp,birthday});
-
-            const reponseBackend = await connectAuth({ mail, mdp });
             
-            login(reponseBackend.user); 
-
-            alert("Création de compte réussie ! Bienvenue.");
-
-            window.location.href = "/";
+            const reponseBackend = await setAuth(pseudo, mail, mdp,birthday);
+            
+            // Si le backend répond positivement :
+            alert("Compte créé avec succès !");
+            navigate('/login'); // On renvoie l'utilisateur vers la connexion
 
         } catch (error) {
             alert("Erreur : Création de compte incorrect !");
@@ -50,6 +43,7 @@ export default function Register() {
                         value={pseudo}
                         // 3. À chaque touche tapée, on met à jour la variable
                         onChange={(e) => setPseudo(e.target.value)} 
+                        required
                     />
                 </div>
                 
@@ -63,6 +57,20 @@ export default function Register() {
                         value={mail}
                         // 3. À chaque touche tapée, on met à jour la variable
                         onChange={(e) => setMail(e.target.value)} 
+                        required
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label>Birthdate</label>
+                    <input 
+                        type="date" 
+                        className="form-input" 
+                        // 2. On lie la valeur à la variable React
+                        value={birthday}
+                        // 3. À chaque touche tapée, on met à jour la variable
+                        onChange={(e) => setBirthday(e.target.value)} 
+                        required
                     />
                 </div>
 
@@ -76,22 +84,13 @@ export default function Register() {
                         value={mdp}
                         // 3. À chaque touche tapée, on met à jour la variable
                         onChange={(e) => setMdp(e.target.value)} 
+                        required
                     />
                 </div>
 
-                <div className="form-group">
-                    <label>Birthdate</label>
-                    <input 
-                        type="date" 
-                        className="form-input" 
-                        // 2. On lie la valeur à la variable React
-                        value={birthdate}
-                        // 3. À chaque touche tapée, on met à jour la variable
-                        onChange={(e) => setBirthday(e.target.value)} 
-                    />
-                </div>
+
                 <button type="submit" className="btn-primary">
-                Sign in
+                    S'inscrire
                 </button>
             </form>
         </div>

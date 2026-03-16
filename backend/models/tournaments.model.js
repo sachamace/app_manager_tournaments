@@ -24,3 +24,4 @@ tournamentSchema.virtual('matches', {
 });
 
 module.exports = mongoose.model('Tournaments', tournamentSchema);
+

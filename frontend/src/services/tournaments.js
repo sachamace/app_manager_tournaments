@@ -87,7 +87,7 @@ export const getRanking = async (id) => {
 };
 
 // POST 
-export const addTournament = async (tournamentData) => {
+export const addTournament = async (games,tree_type,cashprize) => {
     try {
 
         const response = await fetch(`${API_URL}/tournaments`, {
@@ -96,7 +96,7 @@ export const addTournament = async (tournamentData) => {
                 'Content-Type': 'application/json', 
             },
 
-            body: JSON.stringify(tournamentData),
+            body: JSON.stringify({ games , tree_type , cashprize }),
         });
 
         const data = await response.json();

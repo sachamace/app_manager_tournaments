@@ -2,6 +2,7 @@
 import { useState, useContext } from 'react';
 import { connectAuth } from '../services/auth'; // Le Service
 import { AuthContext } from '../context/AuthContext'; // La mémoire
+import { useNavigate } from 'react-router-dom';
 import '../assets/css/index.css';
 export default function Login() {
 
@@ -10,23 +11,20 @@ export default function Login() {
     
     const { login } = useContext(AuthContext);
 
-
+    const navigate = useNavigate();
     const handleSubmit = async (e) => {
-        e.preventDefault(); 
+      e.preventDefault()
+      try {
+        const reponseBackend = await connectAuth( mail, mdp );
 
-        try {
+        login(reponseBackend.user); 
 
-          const reponseBackend = await connectAuth({ mail, mdp });
-          
-          login(reponseBackend.user); 
-          
-          alert("Connexion réussie ! Bienvenue.");
+        alert("Connexion réussie ! Bienvenue.");
 
-          window.location.href = "/";
-
-        } catch (error) {
-          alert("Erreur : Mauvais mail ou mot de passe.");
-        }
+        navigate('/tournaments');
+      } catch (error) {
+        alert("Erreur : Mauvais mail ou mot de passe.");
+      }
     };
 
   return (

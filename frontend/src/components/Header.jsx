@@ -62,7 +62,9 @@ export default function Header() {
                     {user ? (
                         // SI CONNECTÉ : On affiche son pseudo et le bouton déconnexion
                         <>
-                            <span style={{ color: 'var(--text-muted)' }}>Salut, <strong>{user.pseudo}</strong></span>
+                            <Link to="/account" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>
+                                <span >Salut, <strong>{user.pseudo}</strong></span>
+                            </Link>
                             <button 
                                 onClick={handleLogout} 
                                 className="btn-danger" 
