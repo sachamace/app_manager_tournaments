@@ -30,7 +30,7 @@ body.light-mode {
   --border-color: #e5e7eb;   /* Bordures gris clair */
   /* Note : On ne redéfinit pas --accent-color (le violet), il restera le même ! */
 }
-body, .main-header, .auth-card, .tournament-card, .detail-header-card, .form-input {
+body, .main-header, .auth-card, .tournament-card, .detail-header-card, .detail-main-card, .form-input {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 /* --- STRUCTURE GÉNÉRALE --- */
@@ -52,12 +52,9 @@ body, .main-header, .auth-card, .tournament-card, .detail-header-card, .form-inp
   background-color: var(--accent-color);
   color: white;
   border: none;
-  padding: 12px 24px;
+  padding: 10px 20px;
   border-radius: 6px;
-  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
-  width: 100%;
 }
 
 .btn-primary:hover {
@@ -263,4 +260,44 @@ body, .main-header, .auth-card, .tournament-card, .detail-header-card, .form-inp
 .info-box strong {
   font-size: 1.2rem;
   color: var(--accent-color);
+}
+
+.detail-main-card {
+  background-color: var(--bg-card);
+  padding: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.team-card {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.team-info {
+  flex: 1;
+}
+
+.team-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 150px;
+  margin-left: 20px;
+}
+
+.team-card:hover {
+  transform: translateX(8px);
+  border-color: var(--accent-color);
+  box-shadow: -4px 0 0 var(--accent-color);
 }
