@@ -1,4 +1,5 @@
 const TeamsModel = require('../models/teams.model');
+const TournamentsModel = require('../models/tournaments.model');
 
 
 // Les controllers GET 
@@ -55,6 +56,14 @@ module.exports.createTeam = async(req,res) => {
             players,
             matches
         });
+
+        // On ajoute l'équipe créée directement dans le tableau list_teams du tournoi
+        if (tournament) {
+            await TournamentsModel.findByIdAndUpdate(tournament, { 
+                $addToSet: { list_teams: team._id } 
+            });
+        }
+
         res.status(200).json(team);
     } catch (error) {
         console.error(error);
@@ -75,7 +84,7 @@ module.exports.addPlayerInTeam = async(req,res) => {
         const updatedTeam = await TeamsModel.findByIdAndUpdate(
             userId,
             { $addToSet: { players: elementIdToAdd } },
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         );
 
         return res.status(200).json({
@@ -106,7 +115,7 @@ module.exports.addCaptainInTeam = async(req,res) => {
         const updatedTeam = await TeamsModel.findByIdAndUpdate(
             userId,
             { $addToSet: { captain: elementIdToAdd } },
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         );
 
         return res.status(200).json({
@@ -118,9 +127,3 @@ module.exports.addCaptainInTeam = async(req,res) => {
         return res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
-
-
-
-
-
-

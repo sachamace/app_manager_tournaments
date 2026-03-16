@@ -56,7 +56,7 @@ export default function Tournaments() {
                         <div key={tournament._id} className="tournament-card">
                             
                             <div className="tournament-header">
-                                <h3>{tournament.games}</h3>
+                                <h3>{tournament.title}</h3>
                                 
                                 <span className={`badge ${tournament.statut === 'en_cours' ? 'active' : 'pending'}`}>
                                     {tournament.statut}
@@ -64,6 +64,7 @@ export default function Tournaments() {
                             </div>
                             
                             <div className="tournament-info">
+                                <p><strong>Jeu :</strong> {tournament.games}</p>
                                 <p><strong>Format :</strong> {tournament.tree_type}</p>
                                 
                                 {tournament.cashprize && (

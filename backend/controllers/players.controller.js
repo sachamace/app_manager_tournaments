@@ -43,7 +43,7 @@ module.exports.updatePseudo = async(req,res) => {
     const updatePlayer = await PlayersModel.findByIdAndUpdate(
         player,
         pseudo,
-        {new : true}   
+        {returnDocument: 'after'}   
     )
     res.status(200).json(updatePlayer);
 };
@@ -57,7 +57,7 @@ module.exports.updateTeam = async(req,res) => {
     const updatePlayer = await PlayersModel.findByIdAndUpdate(
         player,
         team,
-        {new : true}   
+        {returnDocument: 'after'}   
     )
     res.status(200).json(updatePlayer);
 };
@@ -116,7 +116,7 @@ module.exports.updatePlayer = async(req,res) => {
         const updatedPlayer = await PlayersModel.findByIdAndUpdate(
             playerId,       
             updateData,     
-            { new: true, runValidators: true } 
+            { returnDocument: 'after', runValidators: true } 
         );
 
         if (!updatedPlayer) {

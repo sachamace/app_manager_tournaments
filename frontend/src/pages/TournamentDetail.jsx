@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { getTournamentById } from '../services/tournaments';
+import { getTeamsRegister, getTournamentById } from '../services/tournaments';
 import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../assets/css/index.css';
 export default function TournamentDetail() {
     // 2. On extrait l'ID qui est dans l'URL ! (il s'appelle 'id' car on a mis ':id' dans App.jsx)
@@ -8,7 +9,7 @@ export default function TournamentDetail() {
 
     // 3. Attention : On initialise à "null", pas à "[]", car on récupère UN SEUL objet, pas une liste.
     const [tournament, setTournament] = useState(null);
-
+    const [participants, setParticipants] = useState([]);
     useEffect(() => {
         const loadTournament = async () => {
             // 4. On donne l'ID à notre service ("facteur") !
@@ -16,11 +17,16 @@ export default function TournamentDetail() {
             setTournament(data);
         };
         
+        const loadTeams = async () => {
+            const teams = await getTeamsRegister(id);
+            setParticipants(teams);
+        };
         loadTournament();
+        loadTeams();
     }, [id]); // On met "id" ici pour dire à React de recharger si l'ID dans l'URL change
 
     // Si les données ne sont pas encore arrivées
-    if (!tournament) {
+    if (!tournament || !participants) {
         return <div className="page-container"><p>⏳ Chargement des détails...</p></div>;
     }
   return (
@@ -28,12 +34,43 @@ export default function TournamentDetail() {
       
         <div className="detail-header-card">
             <div>
-                <h1 style={{margin: 0, color: 'var(--accent-color)'}}>{tournament.games}</h1>
+                <h1 style={{margin: 0, color: 'var(--accent-color)'}}>{tournament.title}</h1>
+                <p style={{color: 'var(--text-muted)'}}>Jeu : {tournament.games}</p>
+                <p style={{color: 'var(--text-muted)'}}>Cashprize : {tournament.cashprize}</p>
                 <p style={{color: 'var(--text-muted)'}}>Format : {tournament.tree_type}</p>
             </div>
-            <button className="btn-danger">Supprimer le tournoi</button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <button className="btn-yes">Commencer le tournoi</button>
+                <button className="btn-danger">Supprimer le tournoi</button>
+            </div>
         </div>
 
+        <div className="detail-header-card">
+            {participants.length === 0 ? (
+                <p>Aucun participant pour le moment.</p>
+            ) : (
+                <>
+                    <h1 style={{margin: 0, color: 'var(--accent-color)'}}>Liste des Teams</h1>
+                    <div>
+                        {participants.map((participant) => (
+                            <div key={participant._id} className="tournament-card" style={{ marginBottom: '15px' }}>
+                                <h3 style={{ margin: '0 0 10px 0', color: 'var(--accent-color)' }}>{participant.nom} [{participant.acronyme}]</h3>
+                                <ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
+                                    {participant.players && participant.players.map(player => (
+                                        <li key={player._id} style={{ padding: '8px 0', borderBottom: '1px solid var(--border-color)', color: 'var(--text-main)' }}>
+                                            <strong>{player.pseudo}</strong> {participant.captain === player._id ? '👑' : ''}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ))}
+                    </div>
+                </>
+            )}
+            <Link to={`/tournaments/${id}/add-team`} className="btn-yes" style={{ textDecoration: 'none' , width: 'auto' }}>
+               + Ajouter une équipe
+            </Link>
+        </div>
     </div>
   );
 }

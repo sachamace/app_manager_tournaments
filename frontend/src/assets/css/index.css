@@ -74,6 +74,15 @@ body, .main-header, .auth-card, .tournament-card, .detail-header-card, .form-inp
   cursor: pointer;
 }
 
+.btn-yes {
+  background-color: var(--success);
+  /* ... mêmes propriétés que btn-primary ... */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
 /* --- PAGE DE CONNEXION (Login / Register) --- */
 .auth-wrapper {
   display: flex;

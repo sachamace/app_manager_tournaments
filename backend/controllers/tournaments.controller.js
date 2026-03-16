@@ -41,7 +41,12 @@ module.exports.getBracket = async(req,res) => {
 };
 
 module.exports.getTeamsRegister = async(req,res) => {
-    const tournament = await TournamentsModel.findById(req.params.id);
+    const tournament = await TournamentsModel.findById(req.params.id).populate({
+        path: 'list_teams',
+        populate: {
+            path: 'players' // On récupère aussi les infos détaillées des joueurs !
+        }
+    });
     if (!tournament) {
         return res.status(404).json({ message: "Tournoi non trouvé" });
     }
@@ -82,7 +87,7 @@ module.exports.addTeamsAtTournament = async(req,res) => {
                 $addToSet: {list_teams: elementIdToAdd}
             },
             {
-                new: true,
+                returnDocument: 'after',
                 runValidators: true
             }
         );
@@ -378,7 +383,7 @@ module.exports.unsubscribeTeam = async(req,res) =>{
         const updatedTournament = await TournamentsModel.findByIdAndUpdate(
             idTournament,
             { $pull: { list_teams: teamId } }, // $pull cherche l'ID dans le tableau et l'enlève
-            { new: true } // Renvoie le document mis à jour
+            { returnDocument: 'after' } // Renvoie le document mis à jour
         );
 
         return res.status(200).json({ 
@@ -411,4 +416,3 @@ module.exports.unsubscribeTeam = async(req,res) =>{
 //         return res.status(500).json({ message: "Erreur serveur", error: error.message });         
 //     }
 // };
-
