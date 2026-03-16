@@ -59,8 +59,9 @@ module.exports.getRanking = async(req,res) => {
 // Les controllers POST 
 
 module.exports.addTournament = async(req,res) => {
-    const {games, tree_type, cashprize, list_teams,account,classement} = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
+    const {title,games, tree_type, cashprize, list_teams,account,classement} = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
     const tournament = await TournamentsModel.create({
+        title,
         games,
         tree_type,
         cashprize,

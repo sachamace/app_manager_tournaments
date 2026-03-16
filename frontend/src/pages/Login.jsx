@@ -39,9 +39,9 @@ export default function Login() {
                 type="email" 
                 className="form-input" 
                 placeholder="test@gmail.com" 
-                // 2. On lie la valeur à la variable React
+
                 value={mail}
-                // 3. À chaque touche tapée, on met à jour la variable
+
                 onChange={(e) => setMail(e.target.value)} 
             />
           </div>
@@ -52,9 +52,9 @@ export default function Login() {
                 type="password" 
                 className="form-input" 
                 placeholder="••••••••" 
-                // 2. On lie la valeur à la variable React
+
                 value={mdp}
-                // 3. À chaque touche tapée, on met à jour la variable
+
                 onChange={(e) => setMdp(e.target.value)} 
             />
           </div>

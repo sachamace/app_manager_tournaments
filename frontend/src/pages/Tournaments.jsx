@@ -42,7 +42,9 @@ export default function Tournaments() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h1 className="tournament-header">Mes Tournois</h1>
                 {/* Un futur bouton pour créer un tournoi ! */}
-                <button className="btn-primary" style={{ width: 'auto' }}>+ Créer un tournoi</button>
+               <Link to="/tournaments/create" className="btn-primary" style={{ textDecoration: 'none' , width: 'auto' }}>
+               + Créer un tournoi
+               </Link>
             </div>
             
             {tournaments.length === 0 ? (

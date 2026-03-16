@@ -2,13 +2,14 @@ const mongoose = require("mongoose");
 
 const tournamentSchema = mongoose.Schema(
     {
+        title: {type:String,required: true},
         games: { type: String, required: true },
         tree_type: { type: String, required: true },
         cashprize: { type: String },
         list_teams: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Teams' }],
         account: { type: mongoose.Schema.Types.ObjectId, ref: 'Auth', required: true },
         classement: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Teams' }],
-        statut : {type: String , required: true}
+        statut : {type: String ,default: "en attente", required: true}
     },
     {
         timestamps: true,

@@ -39,9 +39,7 @@ export default function Register() {
                         type="test" 
                         className="form-input" 
                         placeholder="dada" 
-                        // 2. On lie la valeur à la variable React
                         value={pseudo}
-                        // 3. À chaque touche tapée, on met à jour la variable
                         onChange={(e) => setPseudo(e.target.value)} 
                         required
                     />
@@ -53,9 +51,7 @@ export default function Register() {
                         type="email" 
                         className="form-input" 
                         placeholder="test@gmail.com" 
-                        // 2. On lie la valeur à la variable React
                         value={mail}
-                        // 3. À chaque touche tapée, on met à jour la variable
                         onChange={(e) => setMail(e.target.value)} 
                         required
                     />
@@ -66,9 +62,7 @@ export default function Register() {
                     <input 
                         type="date" 
                         className="form-input" 
-                        // 2. On lie la valeur à la variable React
                         value={birthday}
-                        // 3. À chaque touche tapée, on met à jour la variable
                         onChange={(e) => setBirthday(e.target.value)} 
                         required
                     />
@@ -80,9 +74,7 @@ export default function Register() {
                         type="password" 
                         className="form-input" 
                         placeholder="••••••••" 
-                        // 2. On lie la valeur à la variable React
                         value={mdp}
-                        // 3. À chaque touche tapée, on met à jour la variable
                         onChange={(e) => setMdp(e.target.value)} 
                         required
                     />
