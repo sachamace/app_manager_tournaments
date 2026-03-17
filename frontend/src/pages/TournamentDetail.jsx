@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { deleteTournament, getTeamsRegister, getTournamentById, startTournament } from '../services/tournaments';
+import { deleteTournament, getTeamsRegister, getTournamentById, startTournament, generateNextRound } from '../services/tournaments';
 import { deleteTeam } from '../services/teams';
 import { getMatchesInTournaments } from '../services/matches';
 import { useParams } from 'react-router-dom';
@@ -18,6 +18,8 @@ export default function TournamentDetail() {
     const [participants, setParticipants] = useState([]);
     const [message, setMessage] = useState({ type: '', content: '' });
     const [matches , setMatches] = useState([]);
+    const [isRoundFinished, setIsRoundFinished] = useState(false);
+    const [isTournamentFinished, setIsTournamentFinished] = useState(false);
     const handleRemoveTeam = async (teamIdToRemove) => {
         if (!window.confirm("Êtes-vous sûr de vouloir supprimer cette équipe ? Cette action est irréversible et supprimera aussi tous ses joueurs.")) {
             return;
@@ -64,17 +66,78 @@ export default function TournamentDetail() {
         }
     };
 
+    const checkRoundStatus = (currentMatches) => {
+        if (!currentMatches || currentMatches.length === 0) {
+            setIsRoundFinished(false);
+            setIsTournamentFinished(false);
+            return;
+        }
+    
+        // On trouve le numéro du round le plus élevé
+        const maxRound = Math.max(...currentMatches.map(m => m.round));
+        // On ne garde que les matchs de ce round
+        const lastRoundMatches = currentMatches.filter(m => m.round === maxRound);
+    
+        if (lastRoundMatches.length === 0) return;
+    
+        // On vérifie si tous les matchs de ce round sont terminés (ont un gagnant)
+        const allMatchesInRoundFinished = lastRoundMatches.every(m => m.winner);
+    
+        // Le tournoi est-il terminé ? (Un seul match dans le dernier round, et il est fini)
+        const isFinal = lastRoundMatches.length === 1 && allMatchesInRoundFinished;
+    
+        setIsTournamentFinished(isFinal);
+        // On peut générer le tour suivant si le round est fini, mais que le tournoi ne l'est pas
+        setIsRoundFinished(allMatchesInRoundFinished && !isFinal);
+    };
+
+    const handleScoreUpdate = async () => {
+        try {
+            const matchesData = await getMatchesInTournaments(id);
+            setMatches(matchesData);
+            checkRoundStatus(matchesData); // On vérifie le statut après la mise à jour
+        } catch (error) {
+            setMessage({ type: 'error', content: "Erreur lors du rafraîchissement des matchs." });
+        }
+    };
+
+    const handleGenerateNextRound = async () => {
+        if (!window.confirm("Êtes-vous sûr de vouloir générer le tour suivant ?")) {
+            return;
+        }
+        try {
+            const result = await generateNextRound(id);
+            setMessage({ type: 'success', content: result.message });
+            // Si le tournoi est terminé, on met à jour le statut du tournoi
+            if (result.tournament && result.tournament.statut === 'fini') {
+                setTournament(result.tournament);
+            }
+            // On rafraîchit la liste des matchs pour afficher le nouveau round
+            await handleScoreUpdate();
+        } catch (error) {
+            setMessage({ type: 'error', content: error.message || "Erreur lors de la génération du tour suivant." });
+        }
+    };
+
     useEffect(() => {
         const loadTournamentAndData = async () => {
             const tournamentData = await getTournamentById(id); 
             setTournament(tournamentData);
 
             if (tournamentData?.statut === 'en_attente') {
+                setIsRoundFinished(false);
+                setIsTournamentFinished(false);
                 const teams = await getTeamsRegister(id);
                 setParticipants(teams);
-            } else if (tournamentData?.statut === 'en_cours') {
+            } else if (tournamentData?.statut === 'en_cours' || tournamentData?.statut === 'fini') {
                 const matchesData = await getMatchesInTournaments(id);
                 setMatches(matchesData);
+                if (tournamentData.statut === 'en_cours') {
+                    checkRoundStatus(matchesData);
+                } else {
+                    setIsTournamentFinished(true);
+                    setIsRoundFinished(false);
+                }
             }
         };
         loadTournamentAndData();
@@ -97,6 +160,9 @@ export default function TournamentDetail() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {tournament.statut === 'en_attente' && (
                     <ButtonYes onClick={handleStartTournament}>Commencer le tournoi</ButtonYes>
+                )}
+                {isRoundFinished && tournament.statut === 'en_cours' && (
+                    <ButtonYes onClick={handleGenerateNextRound}>Générer le tour suivant</ButtonYes>
                 )}
                 <ButtonDanger onClick={handleRemoveTournament}>Suprimer le tournoi</ButtonDanger>
             </div>
@@ -145,9 +211,15 @@ export default function TournamentDetail() {
                 + Ajouter une équipe
                 </Link>
             </div>
-        ) : tournament.statut === "en_cours" ? (
-            // Afficher le bracket du tournoi
-            <Bracket matches={matches} />
+        ) : tournament.statut === "en_cours" || tournament.statut === "fini" ? (
+            <>
+                {tournament.statut === "fini" && (
+                    <div className="message message-success" style={{ marginBottom: '20px' }}>
+                        🏆 Tournoi terminé !
+                    </div>
+                )}
+                <Bracket matches={matches} onScoreUpdated={handleScoreUpdate} />
+            </>
         ) : (
             <div className="detail-main-card">
                 <p>Statut du tournoi inconnu ou terminé.</p>

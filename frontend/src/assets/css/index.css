@@ -402,6 +402,12 @@ body, .main-header, .auth-card, .tournament-card, .detail-header-card, .detail-m
   border-left: 3px solid var(--success);
 }
 
+.match-team.loser {
+  font-weight: normal;
+  border-left: 3px solid var(--danger);
+  opacity: 0.6;
+}
+
 .match-info {
     font-size: 0.8rem;
     color: var(--text-muted);
@@ -432,4 +438,41 @@ body, .main-header, .auth-card, .tournament-card, .detail-header-card, .detail-m
 .btn-sm {
   padding: 4px 8px;
   font-size: 0.8rem;
+}
+
+.score-input {
+  width: 50px;
+  padding: 4px 8px;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  border-radius: 4px;
+  text-align: center;
+  -moz-appearance: textfield; /* Firefox */
+}
+.score-input::-webkit-outer-spin-button,
+.score-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.score-display {
+    font-weight: bold;
+    min-width: 50px;
+    text-align: center;
+    padding: 4px 8px;
+}
+
+.match-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.message-small {
+    font-size: 0.8rem;
+    text-align: center;
+    margin: 8px 0 0 0;
+    padding: 5px;
+    border-radius: 4px;
 }

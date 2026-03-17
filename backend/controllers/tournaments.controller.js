@@ -262,11 +262,17 @@ module.exports.generateNextRound = async (req, res) => {
         // On récupère les gagnants dans l'ordre de leurs matchs
         const winners = currentRoundMatches.map(m => m.winner);
 
-        // VÉRIFICATION : Est-ce la fin du tournoi ?
         if (winners.length === 1) {
+            const finishedTournament = await TournamentsModel.findByIdAndUpdate(
+                tournamentId, 
+                { $set: { statut: "fini" } },
+                { new: true }
+            );
+
             return res.status(200).json({ 
                 message: "Le tournoi est terminé !", 
-                champion: winners[0] 
+                champion: winners[0],
+                tournament: finishedTournament
             });
         }
 
@@ -313,17 +319,24 @@ module.exports.generateNextRound = async (req, res) => {
 
 module.exports.cancelTournament = async (req,res) => {
     const idTournament = req.params.id;
-    const cancelTournament = await MatchesModel.findById(idTournament);
+    // On cherche le tournoi, pas les matchs
+    const tournament = await TournamentsModel.findById(idTournament);
 
-    if(!cancelTournament){
-        return res.status(500).json({ message: "Tournoi introuvable."});
+    if(!tournament){
+        return res.status(404).json({ message: "Tournoi introuvable."});
     }
 
+    // On supprime tous les matchs associés
     const deletedMatches = await MatchesModel.deleteMany({ tournament: idTournament });
+
+    // On remet le statut du tournoi à "en_attente"
+    tournament.statut = 'en_attente';
+    await tournament.save();
 
     return res.status(200).json({
         message: "Le tournoi a été réinitialisé avec succès. Tous les matchs ont été supprimés.",
-        deletedCount: deletedMatches.deletedCount 
+        deletedCount: deletedMatches.deletedCount,
+        tournament // On renvoie le tournoi mis à jour
     });
 };
 

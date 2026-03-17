@@ -139,15 +139,18 @@ export const startTournament = async (id) => {
                 'Content-Type': 'application/json', 
             },
 
-            body: JSON.stringify(id),
+            // Inutile d'envoyer un body
         });
 
 
         const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || "Erreur lors du démarrage du tournoi.");
+        }
         return data; 
         
     } catch (error) {
-        console.error("Erreur lors de la création du tournoi:", error);
+        console.error("Erreur lors du démarrage du tournoi:", error);
         throw error; 
     }
 };
@@ -161,20 +164,22 @@ export const cancelTournament = async (id) => {
                 'Content-Type': 'application/json', 
             },
 
-            body: JSON.stringify(id),
         });
 
 
         const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || "Erreur lors de la réinitialisation du tournoi.");
+        }
         return data; 
         
     } catch (error) {
-        console.error("Erreur lors de la création du tournoi:", error);
+        console.error("Erreur lors de la réinitialisation du tournoi:", error);
         throw error; 
     }
 };
 
-export const nextRoundMatchesToCreate = async (id) => {
+export const generateNextRound = async (id) => {
     try {
 
         const response = await fetch(`${API_URL}/tournaments/${id}/next-round`, {
@@ -183,15 +188,17 @@ export const nextRoundMatchesToCreate = async (id) => {
                 'Content-Type': 'application/json', 
             },
 
-            body: JSON.stringify(id),
         });
 
 
         const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || "Erreur lors de la génération du tour suivant.");
+        }
         return data; 
         
     } catch (error) {
-        console.error("Erreur lors de la création du tournoi:", error);
+        console.error("Erreur lors de la génération du tour suivant:", error);
         throw error; 
     }
 };
