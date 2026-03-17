@@ -122,8 +122,8 @@ module.exports.startTournament = async (req, res) => {
         }
 
         // 1. On vérifie s'il y a des équipes inscrites
-        if (!tournament.list_teams || tournament.list_teams.length === 0) {
-            return res.status(400).json({ message: "Impossible de lancer un tournoi sans équipes." });
+        if (!tournament.list_teams || tournament.list_teams.length === 0 || tournament.list_teams.length === 1) {
+            return res.status(400).json({ message: "Impossible de lancer un tournoi sans équipes ou une seule équipes." });
         }
 
         // 2. On mélange aléatoirement les équipes
@@ -363,39 +363,6 @@ module.exports.deleteTournament = async(req,res) =>{
     }
 };
 
-module.exports.unsubscribeTeam = async(req,res) =>{
-    try {
-
-        const teamId = req.params.teamId;
-        const idTournament = req.params.id;
-        const tournament = await TournamentsModel.findById(idTournament);
-
-        if (!tournament) {
-            return res.status(404).json({ message: "Tournoi introuvable." });
-        }
-        if(!tournament.statut !== "en_preparation"){
-            return res.status(500).json({message:"Ne peut pas enlever de team car le tournoi a déja commencé."})
-        }
-        if (!tournament.list_teams.includes(teamId)) {
-            return res.status(400).json({ message: "Cette équipe n'est pas inscrite à ce tournoi." });
-        }
-      
-        const updatedTournament = await TournamentsModel.findByIdAndUpdate(
-            idTournament,
-            { $pull: { list_teams: teamId } }, // $pull cherche l'ID dans le tableau et l'enlève
-            { returnDocument: 'after' } // Renvoie le document mis à jour
-        );
-
-        return res.status(200).json({ 
-            message: "L'équipe a été désinscrite avec succès.",
-            tournament: updatedTournament
-        });
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Erreur serveur", error: error.message });       
-    }
-};
 
 // Les controlers PUT
 

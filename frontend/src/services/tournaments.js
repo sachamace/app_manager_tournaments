@@ -212,18 +212,3 @@ export const deleteTournament = async (id) => {
         throw error;
     }
 };
-
-
-export const unsubscribeTeam = async (id,teamId) => {
-    try {
-        const response = await fetch(`${API_URL}/tournaments/${id}/teams/${teamId}`, {
-            method: 'DELETE', 
-        });
-        
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Erreur lors de la suppression du tournoi:", error);
-        throw error;
-    }
-};

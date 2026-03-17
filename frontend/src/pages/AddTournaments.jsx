@@ -111,9 +111,9 @@ export default function AddTournaments() {
                             onChange={(e) => setTreeType(e.target.value)}
                             required
                         >
-                            <option value="single_elimination">Élimination simple</option>
-                            <option value="double_elimination">Élimination double</option>
-                            <option value="round_robin">Round Robin (Phase de poules)</option>
+                            <option value="elimination">Élimination simple</option>
+                            <option value="championnat">Championnat</option>
+                            <option value="suisse">Systême Suisse</option>
                         </select>
                     </div>
 

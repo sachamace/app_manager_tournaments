@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
-import { getTeamsRegister, getTournamentById } from '../services/tournaments';
+import { deleteTournament, getTeamsRegister, getTournamentById } from '../services/tournaments';
 import { deleteTeam } from '../services/teams';
 import { useParams } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import Button from '../components/ui/Button_Primary';
+import { Link , useNavigate } from 'react-router-dom';
+import ButtonPrimary from '../components/ui/Button_Primary';
 import '../assets/css/index.css';
+import ButtonYes from '../components/ui/Button_Yes';
+import ButtonDanger from "../components/ui/Button_Danger";
 export default function TournamentDetail() {
 
     const { id } = useParams(); 
 
-
+    const navigate = useNavigate(); 
     const [tournament, setTournament] = useState(null);
     const [participants, setParticipants] = useState([]);
     const [message, setMessage] = useState({ type: '', content: '' });
@@ -26,6 +28,31 @@ export default function TournamentDetail() {
             setMessage({ type: 'success', content: 'Équipe supprimée avec succès.' });
         } catch (error) {
             setMessage({ type: 'error', content: error.message || "Erreur lors de la suppression de l'équipe." });
+        }
+    };
+    const handleRemoveTournament = async () => {
+        if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce tournoi ? Cette action est irréversible et supprimera le tournoi.")) {
+            return;
+        }
+        try {
+            await deleteTournament(id);
+            // Le message ne sera pas visible car la redirection est immédiate,
+            // mais on peut le laisser si vous implémentez un système de notifications globales (toasts).
+            setMessage({ type: 'success', content: 'Tournoi supprimé avec succès.' });
+            navigate('/tournaments');
+        } catch (error) {
+            setMessage({ type: 'error', content: error.message || "Erreur lors de la suppression du tournoi." });
+        }
+    };
+
+    const handleStartTournament = async() => {
+        if(!window.confirm("Êtes-vous sûr de vouloir commencer ce tournoi ?")){
+            return;
+        }
+        try {
+            
+        } catch (error) {
+            setMessage({ type: 'error', content: error.message || "Erreur lors du commencement du tournoi." });
         }
     };
 
@@ -58,8 +85,8 @@ export default function TournamentDetail() {
                 <p style={{color: 'var(--text-muted)'}}>Format : {tournament.tree_type}</p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <button className="btn-yes">Commencer le tournoi</button>
-                <button className="btn-danger">Supprimer le tournoi</button>
+                <ButtonYes>Commencer le tournoi</ButtonYes>
+                <ButtonDanger onClick={handleRemoveTournament}>Suprimer le tournoi</ButtonDanger>
             </div>
         </div>
 
@@ -92,9 +119,9 @@ export default function TournamentDetail() {
                                     <Link to={`/tournaments/${id}/edit-team/${participant._id}`} className="btn-primary" style={{ textDecoration: 'none', textAlign: 'center', fontSize: '0.9rem', padding: '8px 12px' }}>
                                         Modifier l'équipe
                                     </Link>
-                                    <Button type="submit" onClick={() => handleRemoveTeam(participant._id)}>
+                                    <ButtonPrimary type="submit" onClick={() => handleRemoveTeam(participant._id)}>
                                         Supprimer l'équipe
-                                    </Button>
+                                    </ButtonPrimary>
                                 </div>
                             </div>
                         ))}

@@ -21,7 +21,6 @@ router.post('/:id/next-round', generateNextRound);
 // PATCH 
 
 // DELETE 
-router.delete('/:id/teams/:teamId', unsubscribeTeam);
 router.delete('/:id',deleteTournament);
 
 module.exports = router 
