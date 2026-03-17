@@ -9,8 +9,8 @@ export default function AddTournaments() {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const [games, setGames] = useState('');
-    const [tree_type, setTreeType] = useState('single_elimination');
+    const [games, setGames] = useState('valorant');
+    const [tree_type, setTreeType] = useState('elimination');
     const [cashprize, setCashprize] = useState('');
     const [title, setTitle] = useState('');
     const [message, setMessage] = useState({ type: '', content: '' });
@@ -87,19 +87,14 @@ export default function AddTournaments() {
                     </div>
                     <div className="form-group">
                         <label htmlFor="games">Jeu du tournoi</label>
-                        <select
-                            id="text"
+                        <input
+                            type="text"
+                            id="title"
                             className="form-input"
-                            value={games}
+                            value={title}
                             onChange={(e) => setGames(e.target.value)}
-                            required
-                        >
-                            <option value="valorant">Valorant</option>
-                            <option value="counterstrike">CS2</option>
-                            <option value="leagueoflegends">League of Legends</option>
-                            <option value="rocketleague">Rocket League</option>
-                            <option value="minecraft">Minecraft</option>
-                        </select>
+                            placeholder="League Of Legends"
+                        />
                     </div>
                     
                     <div className="form-group">
@@ -112,8 +107,8 @@ export default function AddTournaments() {
                             required
                         >
                             <option value="elimination">Élimination simple</option>
-                            <option value="championnat">Championnat</option>
-                            <option value="suisse">Systême Suisse</option>
+                            {/* <option value="championnat">Championnat</option>
+                            <option value="suisse">Systême Suisse</option> */}
                         </select>
                     </div>
 
