@@ -301,3 +301,58 @@ body, .main-header, .auth-card, .tournament-card, .detail-header-card, .detail-m
   border-color: var(--accent-color);
   box-shadow: -4px 0 0 var(--accent-color);
 }
+
+/* --- PAGE COMPTE (Account) --- */
+.account-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.account-card {
+  background-color: var(--bg-card);
+  padding: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 30px;
+}
+
+.account-card h2 {
+  margin-top: 0;
+  color: var(--accent-color);
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.message {
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.message-success {
+  background-color: rgba(4, 211, 97, 0.1);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.message-error {
+  background-color: rgba(226, 88, 88, 0.1);
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+.btn-secondary {
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background-color: var(--border-color);
+}

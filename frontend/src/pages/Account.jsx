@@ -22,7 +22,6 @@ export default function Account() {
                 try {
                     const data = await fetchOneAuth(user._id);
                     setUserData(data);
-                    // Initialiser le formulaire avec les données de l'utilisateur
                     setFormData({
                         pseudo: data.pseudo,
                         birthday: data.birthday ? new Date(data.birthday).toISOString().split('T')[0] : ''
@@ -82,7 +81,7 @@ export default function Account() {
     if (!user) {
         return (
             <div className="page-container" style={{ textAlign: 'center' }}>
-                <h1 className="tournament-header">Mon Compte</h1>
+                <h1 className="page-title">Mon Compte</h1>
                 <p style={{ color: 'var(--text-muted)' }}>
                     Vous devez être connecté pour voir cette page.
                 </p>
@@ -98,8 +97,8 @@ export default function Account() {
     }
 
     return (
-        <div className="page-container">
-            <h1 className="tournament-header">Mon Compte</h1>
+        <div className="page-container account-container">
+            <h1 className="page-title">Mon Compte</h1>
 
             {message.content && (
                 <div className={`message ${message.type === 'error' ? 'message-error' : 'message-success'}`}>
@@ -120,16 +119,16 @@ export default function Account() {
                     <form onSubmit={handleUpdate}>
                         <div className="form-group">
                             <label htmlFor="pseudo">Pseudo</label>
-                            <input type="text" id="pseudo" name="pseudo" value={formData.pseudo} onChange={handleInputChange} required />
+                            <input type="text" id="pseudo" name="pseudo" className="form-input" value={formData.pseudo} onChange={handleInputChange} required />
                         </div>
                         <div className="form-group">
                             <label htmlFor="mail">Email</label>
-                            <input type="email" id="mail" name="mail" value={userData.mail} disabled />
+                            <input type="email" id="mail" name="mail" className="form-input" value={userData.mail} disabled />
                             <small>L'email ne peut pas être modifié.</small>
                         </div>
                         <div className="form-group">
                             <label htmlFor="birthday">Date de naissance</label>
-                            <input type="date" id="birthday" name="birthday" value={formData.birthday} onChange={handleInputChange} />
+                            <input type="date" id="birthday" name="birthday" className="form-input" value={formData.birthday} onChange={handleInputChange} />
                         </div>
                         <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
                             <button type="submit" className="btn-primary">Enregistrer</button>
@@ -139,22 +138,22 @@ export default function Account() {
                 )}
             </div>
 
-            <div className="account-card" style={{ marginTop: '30px' }}>
+            <div className="account-card">
                 <h2>Changer le mot de passe</h2>
                 <form onSubmit={handleChangePassword}>
                     <div className="form-group">
                         <label htmlFor="newPassword">Nouveau mot de passe</label>
-                        <input type="password" id="newPassword" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
+                        <input type="password" id="newPassword" className="form-input" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
                     </div>
                     <div className="form-group">
                         <label htmlFor="confirmPassword">Confirmer le mot de passe</label>
-                        <input type="password" id="confirmPassword" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+                        <input type="password" id="confirmPassword" className="form-input" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
                     </div>
                     <button type="submit" className="btn-primary" style={{ marginTop: '20px' }}>Changer le mot de passe</button>
                 </form>
             </div>
             
-            <div className="account-card" style={{ marginTop: '30px', borderColor: 'var(--danger-color)' }}>
+            <div className="account-card" style={{ borderColor: 'var(--danger)' }}>
                 <h2>Zone de danger</h2>
                 <p>La déconnexion mettra fin à votre session actuelle.</p>
                 <button onClick={logout} className="btn-danger" style={{ marginTop: '10px' }}>
@@ -164,3 +163,4 @@ export default function Account() {
         </div>
     );
 }
+
