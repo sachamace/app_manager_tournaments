@@ -1,9 +1,10 @@
 import { useState, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import '../assets/css/index.css';
-import { addPlayerInTeam, createTeam } from '../services/teams';
+
+import { createTeam } from '../services/teams';
 import { createPlayer, updatePlayer } from '../services/players';
+import '../assets/css/index.css';
 export default function AddTeam() {
     const {id : tournamentId} = useParams();
     const { user } = useContext(AuthContext);

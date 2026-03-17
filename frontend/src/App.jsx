@@ -10,6 +10,8 @@ import Register from './pages/Register';
 import Account from './pages/Account';
 import AddTournaments from './pages/AddTournaments';
 import AddTeam from './pages/AddTeam';
+import ModifyTeam from './pages/ModifyTeam';
+
 function App() {
   return (
     <Router>
@@ -31,6 +33,7 @@ function App() {
 
         <Route path="/tournaments/:id/add-team" element={<AddTeam/>}/>
 
+        <Route path="/tournaments/:id/edit-team/:participant_id" element={<ModifyTeam/>}/>
         
         {/* Si l'utilisateur tape n'importe quoi, on le renvoie vers les tournois */}
         <Route path="*" element={<Navigate to="/tournaments" />} />

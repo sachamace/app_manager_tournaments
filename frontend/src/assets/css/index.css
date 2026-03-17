@@ -356,3 +356,30 @@ body, .main-header, .auth-card, .tournament-card, .detail-header-card, .detail-m
 .btn-secondary:hover {
   background-color: var(--border-color);
 }
+
+/* --- LIST GROUP (Pour les listes de joueurs) --- */
+.list-group {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+.list-group-item {
+  padding: 12px 15px;
+  background-color: var(--bg-input);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-group-item:last-child {
+  border-bottom: none;
+}
+
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+}

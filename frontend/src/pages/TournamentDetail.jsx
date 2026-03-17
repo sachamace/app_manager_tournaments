@@ -4,15 +4,19 @@ import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import '../assets/css/index.css';
 export default function TournamentDetail() {
-    // 2. On extrait l'ID qui est dans l'URL ! (il s'appelle 'id' car on a mis ':id' dans App.jsx)
+
     const { id } = useParams(); 
 
-    // 3. Attention : On initialise à "null", pas à "[]", car on récupère UN SEUL objet, pas une liste.
+
     const [tournament, setTournament] = useState(null);
     const [participants, setParticipants] = useState([]);
+
+    const handleRemoveTeam = (participant) => {
+        setPlayers(players.filter(player => player !== playerToRemove));
+    };
+
     useEffect(() => {
         const loadTournament = async () => {
-            // 4. On donne l'ID à notre service ("facteur") !
             const data = await getTournamentById(id); 
             setTournament(data);
         };
@@ -23,9 +27,9 @@ export default function TournamentDetail() {
         };
         loadTournament();
         loadTeams();
-    }, [id]); // On met "id" ici pour dire à React de recharger si l'ID dans l'URL change
+    }, [id]); 
 
-    // Si les données ne sont pas encore arrivées
+
     if (!tournament || !participants) {
         return <div className="page-container"><p>⏳ Chargement des détails...</p></div>;
     }
@@ -68,7 +72,7 @@ export default function TournamentDetail() {
                                     <Link to={`/tournaments/${id}/edit-team/${participant._id}`} className="btn-primary" style={{ textDecoration: 'none', textAlign: 'center', fontSize: '0.9rem', padding: '8px 12px' }}>
                                         Modifier l'équipe
                                     </Link>
-                                    <button className="btn-danger" style={{ fontSize: '0.9rem', padding: '8px 12px' }}>
+                                    <button className="btn-danger" style={{ fontSize: '0.9rem', padding: '8px 12px' }} onClick={() => handleRemoveTeam(team)} >
                                         Supprimer l'équipe
                                     </button>
                                 </div>
