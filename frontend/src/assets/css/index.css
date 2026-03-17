@@ -448,6 +448,7 @@ body, .main-header, .auth-card, .tournament-card, .detail-header-card, .detail-m
   color: var(--text-main);
   border-radius: 4px;
   text-align: center;
+  appearance: textfield;
   -moz-appearance: textfield; /* Firefox */
 }
 .score-input::-webkit-outer-spin-button,

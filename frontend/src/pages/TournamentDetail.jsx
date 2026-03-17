@@ -65,7 +65,6 @@ export default function TournamentDetail() {
             setMessage({ type: 'error', content: error.message || "Erreur lors du démarrage du tournoi." });
         }
     };
-
     const checkRoundStatus = (currentMatches) => {
         if (!currentMatches || currentMatches.length === 0) {
             setIsRoundFinished(false);
@@ -85,10 +84,10 @@ export default function TournamentDetail() {
     
         // Le tournoi est-il terminé ? (Un seul match dans le dernier round, et il est fini)
         const isFinal = lastRoundMatches.length === 1 && allMatchesInRoundFinished;
-    
+        
         setIsTournamentFinished(isFinal);
-        // On peut générer le tour suivant si le round est fini, mais que le tournoi ne l'est pas
-        setIsRoundFinished(allMatchesInRoundFinished && !isFinal);
+        // On affiche le bouton pour passer à l'étape suivante (nouveau round ou fin) dès que tous les matchs du round actuel sont joués.
+        setIsRoundFinished(allMatchesInRoundFinished);
     };
 
     const handleScoreUpdate = async () => {
@@ -162,7 +161,9 @@ export default function TournamentDetail() {
                     <ButtonYes onClick={handleStartTournament}>Commencer le tournoi</ButtonYes>
                 )}
                 {isRoundFinished && tournament.statut === 'en_cours' && (
-                    <ButtonYes onClick={handleGenerateNextRound}>Générer le tour suivant</ButtonYes>
+                    <ButtonYes onClick={handleGenerateNextRound}>
+                        {isTournamentFinished ? '🏆 Terminer le tournoi' : 'Générer le tour suivant'}
+                    </ButtonYes>
                 )}
                 <ButtonDanger onClick={handleRemoveTournament}>Suprimer le tournoi</ButtonDanger>
             </div>
