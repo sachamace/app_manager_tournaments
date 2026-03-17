@@ -1,3 +1,4 @@
+const PlayersModel = require('../models/players.model');
 const TeamsModel = require('../models/teams.model');
 const TournamentsModel = require('../models/tournaments.model');
 
@@ -137,12 +138,7 @@ module.exports.updateTeam = async (req,res) => {
         const teamId = req.params.id;
         const updateData = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
 
-        console.log("--- Requête de mise à jour d'équipe reçue ---");
-        console.log("ID de l'équipe :", teamId);
-        console.log("Données reçues (req.body) :", JSON.stringify(updateData, null, 2));
-
-        // On ne peut pas modifier le tournoi auquel l'équipe est rattachée via cette route
-        if (updateData && updateData.tournament) { // Ajout d'une vérification pour s'assurer que updateData n'est pas undefined
+        if (updateData && updateData.tournament) { 
             delete updateData.tournament;
         }
 
@@ -163,5 +159,31 @@ module.exports.updateTeam = async (req,res) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+// DELETE 
+
+module.exports.deleteTeam = async (req,res) => {
+    try {
+        const teamId = req.params.id
+
+        const deleteTeam = await TeamsModel.findByIdAndDelete(teamId);
+        
+        if (!deleteTeam) {
+            return res.status(404).json({ message: "Cet team est introuvable ." });
+        }
+        
+        // 2. LE NETTOYAGE : On supprime TOUS les joueurs liés à l'équipe
+        const deletedPlayers = await PlayersModel.deleteMany({ team: teamId });
+
+        // 3. On n'oublie pas de renvoyer une réponse de succès !
+        return res.status(200).json({ 
+            message: "La team a été supprimé avec succès.",
+            playersDelete: deletedPlayers.deletedCount
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Erreur serveur", error: error.message }); 
     }
 };

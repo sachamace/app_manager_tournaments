@@ -1,5 +1,5 @@
 const express = require('express');
-const { getTeam, getTeams , getHistoricalMatches, getPlayerInTeam, getCaptainTeam, createTeam, addPlayerInTeam, addCaptainInTeam, updateTeam } = require('../controllers/teams.controller');
+const { getTeam, getTeams , getHistoricalMatches, getPlayerInTeam, getCaptainTeam, createTeam, addPlayerInTeam, addCaptainInTeam, updateTeam, deleteTeam } = require('../controllers/teams.controller');
 
 
 const router = express.Router();
@@ -20,7 +20,7 @@ router.post("/captain/:id",addCaptainInTeam);
 router.patch("/:id", updateTeam);
 
 // DELETE
-
+router.delete("/:id",deleteTeam)
 // PUT
 
 module.exports = router 
