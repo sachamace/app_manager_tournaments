@@ -30,6 +30,8 @@ function App() {
         <Route path="/tournaments/create" element={<AddTournaments/>}/>
 
         <Route path="/tournaments/:id/add-team" element={<AddTeam/>}/>
+
+        
         {/* Si l'utilisateur tape n'importe quoi, on le renvoie vers les tournois */}
         <Route path="*" element={<Navigate to="/tournaments" />} />
       </Routes>
