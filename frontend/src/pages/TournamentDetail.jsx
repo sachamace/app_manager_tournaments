@@ -123,7 +123,7 @@ export default function TournamentDetail() {
             const tournamentData = await getTournamentById(id); 
             setTournament(tournamentData);
 
-            if (tournamentData?.statut === 'en_attente') {
+            if (tournamentData?.statut === 'en attente') {
                 setIsRoundFinished(false);
                 setIsTournamentFinished(false);
                 const teams = await getTeamsRegister(id);
@@ -157,7 +157,7 @@ export default function TournamentDetail() {
                 <p style={{color: 'var(--text-muted)'}}>Format : {tournament.tree_type}</p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {tournament.statut === 'en_attente' && (
+                {tournament.statut === 'en attente' && (
                     <ButtonYes onClick={handleStartTournament}>Commencer le tournoi</ButtonYes>
                 )}
                 {isRoundFinished && tournament.statut === 'en_cours' && (
@@ -174,7 +174,7 @@ export default function TournamentDetail() {
                 {message.content}
             </div>
         )}
-        {tournament.statut === "en_attente" ? (
+        {tournament.statut === "en attente" ? (
             // Afficher l'ajout d'équipe 
             <div className="detail-main-card">
             {participants.length === 0 ? (
@@ -199,9 +199,9 @@ export default function TournamentDetail() {
                                     <Link to={`/tournaments/${id}/edit-team/${participant._id}`} className="btn-primary" style={{ textDecoration: 'none', textAlign: 'center', fontSize: '0.9rem', padding: '8px 12px' }}>
                                         Modifier l'équipe
                                     </Link>
-                                    <ButtonPrimary type="submit" onClick={() => handleRemoveTeam(participant._id)}>
+                                    <ButtonDanger type="submit" onClick={() => handleRemoveTeam(participant._id)}>
                                         Supprimer l'équipe
-                                    </ButtonPrimary>
+                                    </ButtonDanger>
                                 </div>
                             </div>
                         ))}
@@ -212,7 +212,8 @@ export default function TournamentDetail() {
                 + Ajouter une équipe
                 </Link>
             </div>
-        ) : tournament.statut === "en_cours" || tournament.statut === "fini" ? (
+
+        ) : (
             <>
                 {tournament.statut === "fini" && (
                     <div className="message message-success" style={{ marginBottom: '20px' }}>
@@ -221,10 +222,6 @@ export default function TournamentDetail() {
                 )}
                 <Bracket matches={matches} onScoreUpdated={handleScoreUpdate} />
             </>
-        ) : (
-            <div className="detail-main-card">
-                <p>Statut du tournoi inconnu ou terminé.</p>
-            </div>
         )}
     </div>
   );
