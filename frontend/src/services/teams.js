@@ -144,5 +144,27 @@ export const addCaptainInTeam = async (id) => {
 };
 
 
+// PATCH
+export const updateTeam = async (id, teamData) => {
+    try {
+        const response = await fetch(`${API_URL}/teams/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(teamData),
+        });
 
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Erreur lors de la mise à jour de l'équipe.");
+        }
 
+        const data = await response.json();
+        return data;
+
+    } catch (error) {
+        console.error("Erreur lors de la mise à jour de l'équipe:", error);
+        throw error;
+    }
+};

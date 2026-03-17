@@ -127,3 +127,39 @@ module.exports.addCaptainInTeam = async(req,res) => {
         return res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
+
+
+// Patch 
+module.exports.updateTeam = async (req,res) => {
+    try {
+        const teamId = req.params.id;
+        const updateData = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
+
+        console.log("--- Requête de mise à jour d'équipe reçue ---");
+        console.log("ID de l'équipe :", teamId);
+        console.log("Données reçues (req.body) :", JSON.stringify(updateData, null, 2));
+
+        // On ne peut pas modifier le tournoi auquel l'équipe est rattachée via cette route
+        if (updateData && updateData.tournament) { // Ajout d'une vérification pour s'assurer que updateData n'est pas undefined
+            delete updateData.tournament;
+        }
+
+        const updatedTeam = await TeamsModel.findByIdAndUpdate(
+            teamId,
+            { $set: updateData },
+            { returnDocument: 'after', runValidators: true }
+        );
+
+        console.log("Résultat de la mise à jour (updatedTeam) :", updatedTeam);
+
+        if (!updatedTeam) {
+            return res.status(404).json({ message: "Équipe non trouvée." });
+        }
+
+        return res.status(200).json(updatedTeam);
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};

@@ -35,31 +35,45 @@ module.exports.createPlayer = async(req,res) => {
 
 // Les controllers Patch 
 module.exports.updatePseudo = async(req,res) => {
-    const pseudo = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
-    const player = await PlayersModel.findById(req.params.id);
-    if(!player){
-        return res.status(400).json({message : "Ce joueur n'existe pas !"});
+    try {
+        const { pseudo } = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
+        if(!pseudo){
+            return res.status(400).json({message : "Veuillez fournir un pseudo."});
+        }
+        const updatedPlayer = await PlayersModel.findByIdAndUpdate(
+            req.params.id,
+            { $set: { pseudo: pseudo } },
+            { returnDocument: 'after', runValidators: true }   
+        );
+        if(!updatedPlayer){
+            return res.status(404).json({message : "Ce joueur n'existe pas !"});
+        }
+        res.status(200).json(updatedPlayer);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
-    const updatePlayer = await PlayersModel.findByIdAndUpdate(
-        player,
-        pseudo,
-        {returnDocument: 'after'}   
-    )
-    res.status(200).json(updatePlayer);
 };
 
 module.exports.updateTeam = async(req,res) => {
-    const team = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
-    const player = await PlayersModel.findById(req.params.id);
-    if(!player){
-        return res.status(400).json({message : "Ce joueur n'existe pas !"});
+    try {
+        const { team } = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
+        if(!team){
+            return res.status(400).json({message : "Veuillez fournir un ID d'équipe."});
+        }
+        const updatedPlayer = await PlayersModel.findByIdAndUpdate(
+            req.params.id,
+            { $set: { team: team } },
+            { returnDocument: 'after', runValidators: true }   
+        );
+        if(!updatedPlayer){
+            return res.status(404).json({message : "Ce joueur n'existe pas !"});
+        }
+        res.status(200).json(updatedPlayer);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
-    const updatePlayer = await PlayersModel.findByIdAndUpdate(
-        player,
-        team,
-        {returnDocument: 'after'}   
-    )
-    res.status(200).json(updatePlayer);
 };
 
 // Les controllers Delete
@@ -115,7 +129,7 @@ module.exports.updatePlayer = async(req,res) => {
         }
         const updatedPlayer = await PlayersModel.findByIdAndUpdate(
             playerId,       
-            updateData,     
+            { $set: updateData },     
             { returnDocument: 'after', runValidators: true } 
         );
 
