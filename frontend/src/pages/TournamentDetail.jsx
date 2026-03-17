@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getTeamsRegister, getTournamentById } from '../services/tournaments';
+import { deleteTeam } from '../services/teams';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import '../assets/css/index.css';
@@ -10,9 +11,21 @@ export default function TournamentDetail() {
 
     const [tournament, setTournament] = useState(null);
     const [participants, setParticipants] = useState([]);
+    const [message, setMessage] = useState({ type: '', content: '' });
 
-    const handleRemoveTeam = (participant) => {
-        setPlayers(players.filter(player => player !== playerToRemove));
+    const handleRemoveTeam = async (teamIdToRemove) => {
+        if (!window.confirm("Êtes-vous sûr de vouloir supprimer cette équipe ? Cette action est irréversible et supprimera aussi tous ses joueurs.")) {
+            return;
+        }
+        try {
+            await deleteTeam(teamIdToRemove);
+            setParticipants(currentParticipants =>
+                currentParticipants.filter(participant => participant._id !== teamIdToRemove)
+            );
+            setMessage({ type: 'success', content: 'Équipe supprimée avec succès.' });
+        } catch (error) {
+            setMessage({ type: 'error', content: error.message || "Erreur lors de la suppression de l'équipe." });
+        }
     };
 
     useEffect(() => {
@@ -49,6 +62,12 @@ export default function TournamentDetail() {
             </div>
         </div>
 
+        {message.content && (
+            <div className={`message ${message.type === 'error' ? 'message-error' : 'message-success'}`} style={{ marginTop: '20px' }}>
+                {message.content}
+            </div>
+        )}
+
         <div className="detail-main-card">
             {participants.length === 0 ? (
                 <p>Aucun participant pour le moment.</p>
@@ -72,7 +91,7 @@ export default function TournamentDetail() {
                                     <Link to={`/tournaments/${id}/edit-team/${participant._id}`} className="btn-primary" style={{ textDecoration: 'none', textAlign: 'center', fontSize: '0.9rem', padding: '8px 12px' }}>
                                         Modifier l'équipe
                                     </Link>
-                                    <button className="btn-danger" style={{ fontSize: '0.9rem', padding: '8px 12px' }} onClick={() => handleRemoveTeam(team)} >
+                                    <button className="btn-danger" style={{ fontSize: '0.9rem', padding: '8px 12px' }} onClick={() => handleRemoveTeam(participant._id)} >
                                         Supprimer l'équipe
                                     </button>
                                 </div>

@@ -177,9 +177,16 @@ module.exports.deleteTeam = async (req,res) => {
         // 2. LE NETTOYAGE : On supprime TOUS les joueurs liés à l'équipe
         const deletedPlayers = await PlayersModel.deleteMany({ team: teamId });
 
+        // NOUVEAU : On retire également l'équipe du tournoi auquel elle était rattachée
+        if (deleteTeam.tournament) {
+            await TournamentsModel.findByIdAndUpdate(deleteTeam.tournament, {
+                $pull: { list_teams: teamId }
+            });
+        }
+
         // 3. On n'oublie pas de renvoyer une réponse de succès !
         return res.status(200).json({ 
-            message: "La team a été supprimé avec succès.",
+            message: "L'équipe a été supprimée avec succès.",
             playersDelete: deletedPlayers.deletedCount
         });
     } catch (error) {

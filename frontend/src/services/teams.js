@@ -168,3 +168,23 @@ export const updateTeam = async (id, teamData) => {
         throw error;
     }
 };
+
+// Delete
+export const deleteTeam = async (id) => {
+    try {
+        const response = await fetch(`${API_URL}/teams/${id}`,{
+            method: 'DELETE', 
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Erreur lors de la suppression de l'équipe.");
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Erreur lors de la suppression de l'équipe:", error);
+        throw error;
+    }
+}
