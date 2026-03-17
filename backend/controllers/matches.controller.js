@@ -13,7 +13,10 @@ module.exports.getMatchesInTournaments = async (req, res) => {
             return res.status(404).json({ message: "Tournoi non trouvé" });
         }
 
-        const matches = await MatchesModel.find({ tournament: idTournament });
+        const matches = await MatchesModel.find({ tournament: idTournament })
+            .populate('teams') 
+            .populate('winner')
+            .sort({ round: 1, matchNumber: 1 });
 
         res.status(200).json(matches);
 
@@ -99,4 +102,3 @@ module.exports.updateMatchScore = async (req, res) => {
         return res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
-

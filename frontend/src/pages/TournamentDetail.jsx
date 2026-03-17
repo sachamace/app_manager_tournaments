@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
-import { deleteTournament, getTeamsRegister, getTournamentById } from '../services/tournaments';
+import { deleteTournament, getTeamsRegister, getTournamentById, startTournament } from '../services/tournaments';
 import { deleteTeam } from '../services/teams';
+import { getMatchesInTournaments } from '../services/matches';
 import { useParams } from 'react-router-dom';
 import { Link , useNavigate } from 'react-router-dom';
 import ButtonPrimary from '../components/ui/Button_Primary';
 import '../assets/css/index.css';
 import ButtonYes from '../components/ui/Button_Yes';
 import ButtonDanger from "../components/ui/Button_Danger";
+import Bracket from '../components/tournaments/Bracket';
 export default function TournamentDetail() {
 
     const { id } = useParams(); 
@@ -15,7 +17,7 @@ export default function TournamentDetail() {
     const [tournament, setTournament] = useState(null);
     const [participants, setParticipants] = useState([]);
     const [message, setMessage] = useState({ type: '', content: '' });
-
+    const [matches , setMatches] = useState([]);
     const handleRemoveTeam = async (teamIdToRemove) => {
         if (!window.confirm("Êtes-vous sûr de vouloir supprimer cette équipe ? Cette action est irréversible et supprimera aussi tous ses joueurs.")) {
             return;
@@ -46,28 +48,36 @@ export default function TournamentDetail() {
     };
 
     const handleStartTournament = async() => {
-        if(!window.confirm("Êtes-vous sûr de vouloir commencer ce tournoi ?")){
+        if(!window.confirm("Êtes-vous sûr de vouloir commencer ce tournoi ? Cette action générera les matchs du premier tour.")){
             return;
         }
         try {
-            
+            await startTournament(id);
+            setMessage({ type: 'success', content: 'Le tournoi a bien démarré !' });
+            // On recharge les données pour afficher le bracket
+            const updatedTournament = await getTournamentById(id);
+            setTournament(updatedTournament);
+            const matchesData = await getMatchesInTournaments(id);
+            setMatches(matchesData);
         } catch (error) {
-            setMessage({ type: 'error', content: error.message || "Erreur lors du commencement du tournoi." });
+            setMessage({ type: 'error', content: error.message || "Erreur lors du démarrage du tournoi." });
         }
     };
 
     useEffect(() => {
-        const loadTournament = async () => {
-            const data = await getTournamentById(id); 
-            setTournament(data);
+        const loadTournamentAndData = async () => {
+            const tournamentData = await getTournamentById(id); 
+            setTournament(tournamentData);
+
+            if (tournamentData?.statut === 'en_attente') {
+                const teams = await getTeamsRegister(id);
+                setParticipants(teams);
+            } else if (tournamentData?.statut === 'en_cours') {
+                const matchesData = await getMatchesInTournaments(id);
+                setMatches(matchesData);
+            }
         };
-        
-        const loadTeams = async () => {
-            const teams = await getTeamsRegister(id);
-            setParticipants(teams);
-        };
-        loadTournament();
-        loadTeams();
+        loadTournamentAndData();
     }, [id]); 
 
 
@@ -85,7 +95,9 @@ export default function TournamentDetail() {
                 <p style={{color: 'var(--text-muted)'}}>Format : {tournament.tree_type}</p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <ButtonYes>Commencer le tournoi</ButtonYes>
+                {tournament.statut === 'en_attente' && (
+                    <ButtonYes onClick={handleStartTournament}>Commencer le tournoi</ButtonYes>
+                )}
                 <ButtonDanger onClick={handleRemoveTournament}>Suprimer le tournoi</ButtonDanger>
             </div>
         </div>
@@ -95,8 +107,9 @@ export default function TournamentDetail() {
                 {message.content}
             </div>
         )}
-
-        <div className="detail-main-card">
+        {tournament.statut === "en_attente" ? (
+            // Afficher l'ajout d'équipe 
+            <div className="detail-main-card">
             {participants.length === 0 ? (
                 <p>Aucun participant pour le moment.</p>
             ) : (
@@ -125,14 +138,21 @@ export default function TournamentDetail() {
                                 </div>
                             </div>
                         ))}
-                        
                     </div>
                 </>
-            )}
-            <Link to={`/tournaments/${id}/add-team`} className="btn-yes" style={{ textDecoration: 'none' , alignSelf: 'flex-start' }}>
-               + Ajouter une équipe
-            </Link>
-        </div>
+                )}
+                <Link to={`/tournaments/${id}/add-team`} className="btn-yes" style={{ textDecoration: 'none' , alignSelf: 'flex-start' }}>
+                + Ajouter une équipe
+                </Link>
+            </div>
+        ) : tournament.statut === "en_cours" ? (
+            // Afficher le bracket du tournoi
+            <Bracket matches={matches} />
+        ) : (
+            <div className="detail-main-card">
+                <p>Statut du tournoi inconnu ou terminé.</p>
+            </div>
+        )}
     </div>
   );
 }
