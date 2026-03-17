@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Badge from '../ui/Badge';
-import Button from '../ui/Button';
+import Button from '../ui/Button_Primary';
 import '../../assets/css/index.css';
 
 const TournamentCard = ({ tournament }) => {

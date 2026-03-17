@@ -1,13 +1,12 @@
 import { useState, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-
+import ButtonYes from '../components/ui/Button_Yes';
 import { createTeam } from '../services/teams';
 import { createPlayer, updatePlayer } from '../services/players';
 import '../assets/css/index.css';
 export default function AddTeam() {
     const {id : tournamentId} = useParams();
-    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const [nom, setNom] = useState('');
@@ -169,10 +168,9 @@ export default function AddTeam() {
                             </select>
                         </div>
                     )}
-
-                    <button type="submit" className="btn-yes" style={{ marginTop: '20px' }}>
+                    <ButtonYes type="submit" style={{ marginTop: '20px' }}>
                         Soumettre l'équipe
-                    </button>
+                    </ButtonYes>
                 </form>
             </div>
         </div>

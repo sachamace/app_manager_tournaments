@@ -2,7 +2,7 @@
 import React from 'react';
 import '../../assets/css/index.css';
 
-const Button = ({ children, onClick, type = 'button', className = 'btn-primary' }) => {
+const ButtonDanger = ({ children, onClick, type = 'button', className = 'btn-danger' }) => {
   return (
     <button type={type} className={className} onClick={onClick}>
       {children}
@@ -10,4 +10,4 @@ const Button = ({ children, onClick, type = 'button', className = 'btn-primary' 
   );
 };
 
-export default Button;
+export default ButtonDanger;

@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { addTournament } from '../services/tournaments';
 import '../assets/css/index.css';
+import ButtonPrimary from '../components/ui/Button_Primary';
 
 export default function AddTournaments() {
     const { user } = useContext(AuthContext);
@@ -128,9 +129,10 @@ export default function AddTournaments() {
                         />
                     </div>
 
-                    <button type="submit" className="btn-primary" style={{ marginTop: '20px' }}>
+
+                    <ButtonPrimary type="submit" >
                         Créer le tournoi
-                    </button>
+                    </ButtonPrimary>
                 </form>
             </div>
         </div>

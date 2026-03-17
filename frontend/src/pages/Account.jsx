@@ -2,6 +2,9 @@ import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { fetchOneAuth, updateAuth, changePassword } from '../services/auth';
 import { Link } from 'react-router-dom';
+import ButtonDanger from '../components/ui/Button_Danger';
+import ButtonPrimary from '../components/ui/Button_Primary';
+import ButtonYes from '../components/ui/Button_Yes';
 import '../assets/css/index.css';
 
 export default function Account() {
@@ -113,7 +116,9 @@ export default function Account() {
                         <p><strong>Pseudo :</strong> {userData.pseudo}</p>
                         <p><strong>Email :</strong> {userData.mail}</p>
                         <p><strong>Date de naissance :</strong> {userData.birthday ? new Date(userData.birthday).toLocaleDateString() : 'Non renseignée'}</p>
-                        <button onClick={() => setIsEditing(true)} className="btn-primary" style={{ marginTop: '20px' }}>Modifier le profil</button>
+                        <ButtonPrimary onClick={() => setIsEditing(true)} >
+                            Modifier le profil
+                        </ButtonPrimary>
                     </>
                 ) : (
                     <form onSubmit={handleUpdate}>
@@ -131,8 +136,12 @@ export default function Account() {
                             <input type="date" id="birthday" name="birthday" className="form-input" value={formData.birthday} onChange={handleInputChange} />
                         </div>
                         <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-                            <button type="submit" className="btn-primary">Enregistrer</button>
-                            <button type="button" onClick={() => setIsEditing(false)} className="btn-secondary">Annuler</button>
+                            <ButtonPrimary type="submit" >
+                                Enregistrer
+                            </ButtonPrimary>
+                            <ButtonPrimary onClick={() => setIsEditing(false)}>
+                                Annuler
+                            </ButtonPrimary>
                         </div>
                     </form>
                 )}
@@ -149,16 +158,18 @@ export default function Account() {
                         <label htmlFor="confirmPassword">Confirmer le mot de passe</label>
                         <input type="password" id="confirmPassword" className="form-input" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
                     </div>
-                    <button type="submit" className="btn-primary" style={{ marginTop: '20px' }}>Changer le mot de passe</button>
+                    <ButtonPrimary type="submit" >
+                        Changer le mot de passe
+                    </ButtonPrimary>
                 </form>
             </div>
             
             <div className="account-card" style={{ borderColor: 'var(--danger)' }}>
                 <h2>Zone de danger</h2>
                 <p>La déconnexion mettra fin à votre session actuelle.</p>
-                <button onClick={logout} className="btn-danger" style={{ marginTop: '10px' }}>
+                <ButtonDanger type="submit" onClick={logout}>
                     Déconnexion
-                </button>
+                </ButtonDanger>
             </div>
         </div>
     );

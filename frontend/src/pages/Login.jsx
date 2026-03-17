@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import AuthLayout from '../components/layout/AuthLayout';
 import Card from '../components/ui/Card';
 import Input from '../components/ui/Input';
-import Button from '../components/ui/Button';
+import ButtonPrimary from '../components/ui/Button_Primary';
 
 export default function Login() {
   const [mail, setMail] = useState('');
@@ -45,9 +45,9 @@ export default function Login() {
             value={mdp}
             onChange={(e) => setMdp(e.target.value)}
           />
-          <Button type="submit">
+          <ButtonPrimary type="submit">
             Se connecter
-          </Button>
+          </ButtonPrimary>
         </form>
       </Card>
     </AuthLayout>

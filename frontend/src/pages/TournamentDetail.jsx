@@ -3,6 +3,7 @@ import { getTeamsRegister, getTournamentById } from '../services/tournaments';
 import { deleteTeam } from '../services/teams';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import Button from '../components/ui/Button_Primary';
 import '../assets/css/index.css';
 export default function TournamentDetail() {
 
@@ -91,9 +92,9 @@ export default function TournamentDetail() {
                                     <Link to={`/tournaments/${id}/edit-team/${participant._id}`} className="btn-primary" style={{ textDecoration: 'none', textAlign: 'center', fontSize: '0.9rem', padding: '8px 12px' }}>
                                         Modifier l'équipe
                                     </Link>
-                                    <button className="btn-danger" style={{ fontSize: '0.9rem', padding: '8px 12px' }} onClick={() => handleRemoveTeam(participant._id)} >
+                                    <Button type="submit" onClick={() => handleRemoveTeam(participant._id)}>
                                         Supprimer l'équipe
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         ))}

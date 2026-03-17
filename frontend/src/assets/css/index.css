@@ -343,20 +343,6 @@ body, .main-header, .auth-card, .tournament-card, .detail-header-card, .detail-m
   color: var(--danger);
   border: 1px solid var(--danger);
 }
-
-.btn-secondary {
-  background-color: var(--bg-input);
-  color: var(--text-main);
-  border: 1px solid var(--border-color);
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.btn-secondary:hover {
-  background-color: var(--border-color);
-}
-
 /* --- LIST GROUP (Pour les listes de joueurs) --- */
 .list-group {
   list-style: none;

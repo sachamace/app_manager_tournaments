@@ -5,6 +5,9 @@ import { AuthContext } from '../context/AuthContext';
 import { getTeam, updateTeam } from '../services/teams';
 import { createPlayer, updatePlayer, deletePlayer } from '../services/players';
 import '../assets/css/index.css';
+import ButtonDanger from '../components/ui/Button_Danger';
+import ButtonYes from '../components/ui/Button_Yes';
+import ButtonPrimary from '../components/ui/Button_Primary';
 export default function ModifyTeam() {
     const { id: tournamentId, participant_id: teamId } = useParams();
     const { user } = useContext(AuthContext);
@@ -149,7 +152,9 @@ export default function ModifyTeam() {
                                 onChange={(e) => setPlayerName(e.target.value)}
                                 placeholder="Caliste"
                             />
-                            <button type="button" onClick={handleAddPlayer} className="btn-yes" style={{ marginLeft: '10px' }}>+</button>
+                            <ButtonYes onClick={handleAddPlayer}>
+                                +
+                            </ButtonYes>
                         </div>
                     </div>
                     {players.length > 0 && (
@@ -160,7 +165,9 @@ export default function ModifyTeam() {
                                     {players.map((player, index) => (
                                         <li key={index} className="list-group-item">
                                             {player}
-                                            <button type="button" onClick={() => handleRemovePlayer(player)} className="btn-danger btn-sm">-</button>
+                                            <ButtonDanger onClick={() => handleRemovePlayer(player)} className="btn-danger btn-sm">
+                                                -
+                                            </ButtonDanger>
                                         </li>
                                     ))}
                                 </ul>
@@ -184,8 +191,12 @@ export default function ModifyTeam() {
                     )}
 
                     <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-                        <button type="submit" className="btn-primary">Enregistrer</button>
-                        <button type="button" onClick={() => navigate(`/tournaments/${tournamentId}`)} className="btn-secondary">Annuler</button>
+                        <ButtonPrimary type="submit">
+                            Enregistrer
+                        </ButtonPrimary>
+                        <ButtonDanger onClick={() => navigate(`/tournaments/${tournamentId}`)}>
+                            Annuler
+                        </ButtonDanger>
                     </div>
                 </form>
             </div>
