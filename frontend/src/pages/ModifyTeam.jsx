@@ -47,15 +47,17 @@ export default function ModifyTeam() {
             const originalPseudos = originalPlayers.map(p => p.pseudo);
             const pseudosToAdd = players.filter(p => !originalPseudos.includes(p));
             const playersToRemove = originalPlayers.filter(p => !players.includes(p.pseudo));
-
+            
             const newPlayerObjects = await Promise.all(
                 pseudosToAdd.map(pseudo => createPlayer({ pseudo }))
             );
             await Promise.all(
+                // On passe l'ID du joueur, pas l'objet entier, pour être plus robuste.
                 playersToRemove.map(p => deletePlayer(p._id))
             );
 
             const remainingOriginalPlayers = originalPlayers.filter(p => players.includes(p.pseudo));
+            // On fusionne les deux tableaux en un seul (et non un tableau de tableaux).
             const finalPlayers = [...remainingOriginalPlayers, ...newPlayerObjects];
             const finalPlayerIds = finalPlayers.map(p => p._id);
             const captainId = finalPlayers.find(p => p.pseudo === captain)?._id;

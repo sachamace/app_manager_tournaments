@@ -8,7 +8,10 @@ const port = 5000
 connectDB();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: '*', // Ou l'URL de ton frontend
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'] 
+}));
 
 // Middleware qui permet de traiter les donnée de la Request 
 app.use(express.json());

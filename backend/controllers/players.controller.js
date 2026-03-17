@@ -88,7 +88,6 @@ try {
             return res.status(404).json({ message: "Ce joueur n'existe pas." });
         }
 
-        // 2. On met à jour l'équipe SEULEMENT si ce joueur avait une équipe
         if (deletedPlayer.team) {
             await TeamsModel.updateOne(
                 { 
@@ -99,7 +98,6 @@ try {
             );
         }
 
-        // 3. On n'oublie pas de renvoyer une réponse de succès !
         return res.status(200).json({ 
             message: "Joueur supprimé avec succès.",
             player: deletedPlayer

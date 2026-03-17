@@ -10,9 +10,11 @@ module.exports.getTeams = async(req,res) =>{
 };
 
 module.exports.getTeam = async(req,res) =>{
-    const team = await TeamsModel.findById(req.params.id);
+    // On utilise .populate() pour récupérer les détails des joueurs, pas seulement leurs IDs.
+    const team = await TeamsModel.findById(req.params.id).populate('players');
     if (!team) {
-        return res.status(404).json({ message: "Tournoi non trouvé" });
+        // Le message était incorrect, il s'agit d'une équipe
+        return res.status(404).json({ message: "Équipe non trouvée" });
     }
     res.status(200).json(team);
 };
