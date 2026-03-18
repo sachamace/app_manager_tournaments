@@ -15,7 +15,6 @@ export default function ModifyTeam() {
 
     const [nom, setNom] = useState('');
     const [acronyme, setAcronyme] = useState('');
-    const [logo, setLogo] = useState(null);
     const [captain, setCaptain] = useState('');
     const [players, setPlayers] = useState([]);
     const [playerName, setPlayerName] = useState('');
@@ -131,16 +130,7 @@ export default function ModifyTeam() {
                         <label htmlFor="acronyme">Acronyme de l'équipe</label>
                         <input type="text" id="acronyme" name="acronyme" className="form-input" value={acronyme} onChange={(e) => setAcronyme(e.target.value)} required />
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="logo">Logo de l'équipe (Optionnel)</label>
-                        <input
-                            type="file"
-                            id="logo"
-                            className="form-input"
-                            accept="image/*"
-                            onChange={(e) => setLogo(e.target.files[0])}
-                        />
-                    </div>
+
 
                     <div className="form-group">
                         <label htmlFor="players">Ajout d'un joueur </label>

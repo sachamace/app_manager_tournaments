@@ -54,7 +54,6 @@ export default function AddTeam() {
                 tournament: tournamentId,
                 nom,
                 acronyme,
-                logo,
                 captain: captainId,
                 players: playerIds
             };
@@ -112,18 +111,6 @@ export default function AddTeam() {
                             required
                         />
                     </div>
-                    
-                    <div className="form-group">
-                        <label htmlFor="logo">Logo de l'équipe - Optionnel</label>
-                        <input
-                            type="file"
-                            id="logo"
-                            className="form-input"
-                            accept="image/*" 
-                            onChange={(e) => setLogo(e.target.files[0])} 
-                        />
-                    </div>
-
                     
                     <div className="form-group">
                         <label htmlFor="players">Ajout d'un joueur </label>

@@ -9,7 +9,7 @@ export default function AddTournaments() {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const [games, setGames] = useState('valorant');
+    const [games, setGames] = useState('');
     const [tree_type, setTreeType] = useState('elimination');
     const [cashprize, setCashprize] = useState('');
     const [title, setTitle] = useState('');
@@ -83,17 +83,19 @@ export default function AddTournaments() {
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="Tournoi 1V1 Aram"
+                            required
                         />
                     </div>
                     <div className="form-group">
                         <label htmlFor="games">Jeu du tournoi</label>
                         <input
                             type="text"
-                            id="title"
+                            id="texte"
                             className="form-input"
-                            value={title}
+                            value={games}
                             onChange={(e) => setGames(e.target.value)}
                             placeholder="League Of Legends"
+                            required
                         />
                     </div>
                     

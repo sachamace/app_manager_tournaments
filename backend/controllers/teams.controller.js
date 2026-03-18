@@ -49,12 +49,11 @@ module.exports.getPlayerInTeam = async(req,res)=>{
 
 module.exports.createTeam = async(req,res) => {
     try {
-        const {tournament, nom, acronyme, logo,captain,players,matches} = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
+        const {tournament, nom, acronyme,captain,players,matches} = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
         const team = await TeamsModel.create({
             tournament,
             nom,
             acronyme,
-            logo,
             captain,
             players,
             matches

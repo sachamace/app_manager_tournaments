@@ -15,9 +15,6 @@ const teamSchema = mongoose.Schema(
             type: String,
             required: true
         },
-        logo: {
-            type: String
-        },
         captain: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Players'

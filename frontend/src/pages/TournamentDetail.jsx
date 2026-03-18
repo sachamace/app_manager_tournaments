@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { deleteTournament, getTeamsRegister, getTournamentById, startTournament, generateNextRound } from '../services/tournaments';
 import { deleteTeam } from '../services/teams';
 import { getMatchesInTournaments } from '../services/matches';
@@ -142,8 +142,17 @@ export default function TournamentDetail() {
         loadTournamentAndData();
     }, [id]); 
 
+    const winner = useMemo(() => {
+        if (tournament?.statut !== 'fini' || !matches || matches.length === 0) {
+            return null;
+        }
+        const maxRound = Math.max(...matches.map(m => m.round));
+        const finalMatch = matches.find(m => m.round === maxRound);
+        return finalMatch?.winner;
+    }, [tournament, matches]);
 
-    if (!tournament || !participants) {
+
+    if (!tournament) {
         return <div className="page-container"><p>⏳ Chargement des détails...</p></div>;
     }
   return (
@@ -217,7 +226,7 @@ export default function TournamentDetail() {
             <>
                 {tournament.statut === "fini" && (
                     <div className="message message-success" style={{ marginBottom: '20px' }}>
-                        🏆 Tournoi terminé !
+                        🏆 Tournoi terminé - Vainqueur : {winner?.nom}
                     </div>
                 )}
                 <Bracket matches={matches} onScoreUpdated={handleScoreUpdate} />

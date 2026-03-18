@@ -165,8 +165,6 @@ export default function Account() {
             </div>
             
             <div className="account-card" style={{ borderColor: 'var(--danger)' }}>
-                <h2>Zone de danger</h2>
-                <p>La déconnexion mettra fin à votre session actuelle.</p>
                 <ButtonDanger type="submit" onClick={logout}>
                     Déconnexion
                 </ButtonDanger>
