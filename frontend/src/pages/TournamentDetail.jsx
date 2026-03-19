@@ -39,6 +39,9 @@ export default function TournamentDetail() {
             return;
         }
         try {
+
+
+
             await deleteTournament(id);
             // Le message ne sera pas visible car la redirection est immédiate,
             // mais on peut le laisser si vous implémentez un système de notifications globales (toasts).

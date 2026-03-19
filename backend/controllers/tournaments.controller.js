@@ -376,8 +376,17 @@ module.exports.deleteTournament = async(req,res) =>{
     }
 };
 
+// module.exports.deleteAllTeamInTournament = async(req,res) => {
+//     try {
+//         const tournamentId = req.params.id;
+//         const allId
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).json({ message: "Erreur serveur", error: error.message });
+//     }
+// };
 
-// Les controlers PUT
+// Les controleurs PUT
 
 // module.exports.replaceAll = async(req,res) =>{
 //     try {
