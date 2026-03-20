@@ -39,8 +39,8 @@ const connectAuthLogic = async (mail, mdp) => {
     const user = await AccountModel.findOne({ mail: mail });
     if (!user) throw new Error("Utilisateur non trouvé !");
 
-
-    if (verifyPassword(user.mdp,hashPassword(mdp))) {
+    const isVerif = await verifyPassword(mdp,user.mdp);
+    if (!isVerif) {
         throw new Error("Mot de passe incorrect !");
     }
 
@@ -53,12 +53,12 @@ const setAuthLogic = async (pseudo,mail,mdp,birthday) => {
     if(!mail) throw new Error("Merci d'ajouter un email !");
     if(!mdp) throw new Error("Merci d'ajouter un mot de passe !");
 
-    const hashmdp = hashPassword(mdp);
+    const hashmdp = await hashPassword(mdp);
 
     const account = await AccountModel.create({
         pseudo,
         mail,
-        hashmdp,
+        mdp: hashmdp,
         birthday
     })
     
@@ -67,16 +67,16 @@ const setAuthLogic = async (pseudo,mail,mdp,birthday) => {
 };
 
 
-const changePasswordLogic = async(idAuth,oldMdp) => {
-    const account = await AccountModel.findById(idAuth);
+const changePasswordLogic = async(idAuth,newMdp) => {
 
     if(!account){
         return null;
     }
+    const hashedNewMdp = await hashPassword(newMdp);
 
     const updateAccount = await AccountModel.findByIdAndUpdate(
-        account,
-        oldMdp,
+        idAuth,
+        { mdp: hashedNewMdp },
         {new : true}   
     )
     
