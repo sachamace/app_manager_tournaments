@@ -1,7 +1,7 @@
-const PlayersModel = require('../models/players.model');
 const TeamsModel = require('../models/teams.model');
-const TournamentsModel = require('../models/tournaments.model');
 
+
+const { deleteTeamLogic , createTeamLogic , addCaptainInTeamLogic} = require('../services/team.service');
 
 // Les controllers GET 
 
@@ -49,24 +49,11 @@ module.exports.getPlayerInTeam = async(req,res)=>{
 
 module.exports.createTeam = async(req,res) => {
     try {
-        const {tournament, nom, acronyme,captain,players,matches} = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
-        const team = await TeamsModel.create({
-            tournament,
-            nom,
-            acronyme,
-            captain,
-            players,
-            matches
-        });
+        const teamData = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
+        
+        const team = await createTeamLogic(teamData);
 
-        // On ajoute l'équipe créée directement dans le tableau list_teams du tournoi
-        if (tournament) {
-            await TournamentsModel.findByIdAndUpdate(tournament, { 
-                $addToSet: { list_teams: team._id } 
-            });
-        }
-
-        res.status(200).json(team);
+        res.status(201).json(team);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Erreur serveur", error: error.message });
@@ -103,22 +90,8 @@ module.exports.addCaptainInTeam = async(req,res) => {
     try {
         const userId = req.params.id
         const elementIdToAdd = req.body
-        const team = await TeamsModel.findById(userId);
 
-        if (!team) {
-            return res.status(404).json({ message: "La team est introuvable." });
-        }
-
-        if (team.captain && team.captain.length > 0) {
-            return res.status(400).json({ 
-                message: "Il existe déjà un capitaine dans votre équipe." 
-            });
-        }
-        const updatedTeam = await TeamsModel.findByIdAndUpdate(
-            userId,
-            { $addToSet: { captain: elementIdToAdd } },
-            { returnDocument: 'after', runValidators: true }
-        );
+        const updatedTeam = await addCaptainInTeamLogic(userId,elementIdToAdd);
 
         return res.status(200).json({
             message: "Un capitaine est ajouté dans la team avec succès !",
@@ -165,24 +138,18 @@ module.exports.updateTeam = async (req,res) => {
 
 module.exports.deleteTeam = async (req,res) => {
     try {
-        const teamId = req.params.id
+        const teamId = req.params.id;
 
-        const deleteTeam = await TeamsModel.findByIdAndDelete(teamId);
+        // On appelle notre service neutre
+        const result = await deleteTeamLogic(teamId);
         
-        if (!deleteTeam) {
-            return res.status(404).json({ message: "Cet team est introuvable ." });
+        if (!result) {
+            return res.status(404).json({ message: "Cette team est introuvable." });
         }
         
-        const deletedPlayers = await PlayersModel.deleteMany({ team: teamId });
-
-        if (deleteTeam.tournament) {
-            await TournamentsModel.findByIdAndUpdate(deleteTeam.tournament, {
-                $pull: { list_teams: teamId }
-            });
-        }
         return res.status(200).json({ 
             message: "L'équipe a été supprimée avec succès.",
-            playersDelete: deletedPlayers.deletedCount
+            playersDelete: result.deletedPlayersCount
         });
     } catch (error) {
         console.error(error);

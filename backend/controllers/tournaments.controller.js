@@ -1,6 +1,6 @@
 const MatchesModel = require('../models/matches.model');
 const TournamentsModel = require('../models/tournaments.model');
-
+const { deleteTeamLogic } = require('../services/team.service');
 // Les fonctions utilisés 
 const shuffleArray = (array) => {
     // On crée une copie du tableau pour ne pas casser la donnée d'origine
@@ -376,15 +376,34 @@ module.exports.deleteTournament = async(req,res) =>{
     }
 };
 
-// module.exports.deleteAllTeamInTournament = async(req,res) => {
-//     try {
-//         const tournamentId = req.params.id;
-//         const allId
-//     } catch (error) {
-//         console.error(error);
-//         return res.status(500).json({ message: "Erreur serveur", error: error.message });
-//     }
-// };
+module.exports.deleteAllTeamInTournament = async(req,res) => {
+    try {
+        const tournamentId = req.params.id;
+
+        // 1. Récupérer le tournoi pour avoir la liste des équipes
+        const tournament = await TournamentsModel.findById(tournamentId);
+
+        if (!tournament) {
+            return res.status(404).json({ message: "Tournoi introuvable." });
+        }
+
+        if (!tournament.list_teams || tournament.list_teams.length === 0) {
+            return res.status(400).json({ message: "Il n'y a aucune équipe à supprimer dans ce tournoi." });
+        }
+
+        // 2. On boucle sur toutes les équipes et on exécute notre service
+        // Promise.all permet d'exécuter toutes les suppressions en parallèle
+        const deletePromises = tournament.list_teams.map(teamId => deleteTeamLogic(teamId));
+        await Promise.all(deletePromises);
+
+        return res.status(200).json({ 
+            message: "Toutes les équipes du tournoi ont été supprimées avec succès (ainsi que leurs joueurs)." 
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
 
 // Les controleurs PUT
 
