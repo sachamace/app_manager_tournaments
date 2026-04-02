@@ -1,6 +1,4 @@
-const TeamsModel = require('../models/teams.model');
 const asyncHandler = require('express-async-handler');
-
 const { 
     getTeamsLogic,
     getTeamLogic,

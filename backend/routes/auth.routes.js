@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAuths, getAuth, setAuth, connectAuth, changePassword } = require('../controllers/auth.controller');
+const { getAuths, getAuth, setAuth, connectAuth, updateAccount } = require('../controllers/auth.controller');
 
 const router = express.Router(); // Création d'un router qui va agir pour tout les auths
 
@@ -13,7 +13,7 @@ router.post("/register",setAuth);
 router.post("/login",connectAuth);
 
 // PATCH
-router.patch("/:id",changePassword);
+router.patch("/:id",updateAccount);
 
 // Autre controllers qui arrive ! 
 // ...

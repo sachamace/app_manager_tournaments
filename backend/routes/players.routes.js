@@ -2,7 +2,8 @@ const express = require('express');
 const{ getPlayers,getPlayer,createPlayer,updatePseudo,updateTeam,deletePlayer,updatePlayer} = require('../controllers/players.controller');
 
 const router = express.Router(); 
-
+// On importe le middleware
+const { checkAuth } = require('../middleware/auth.middleware'); 
 // GET 
 router.get("/",getPlayers);
 router.get("/:id",getPlayer);

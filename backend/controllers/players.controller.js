@@ -1,4 +1,4 @@
-const playerService = require('../services/players.service'); // Adapte le chemin si nécessaire
+const playerService = require('../services/player.service') // Adapte le chemin si nécessaire
 const asyncHandler = require('express-async-handler');
 // --- Controllers GET ---
 

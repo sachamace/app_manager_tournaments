@@ -3,7 +3,8 @@ const { getTeam, getTeams , getHistoricalMatches, getPlayerInTeam, getCaptainTea
 
 
 const router = express.Router();
-
+// On importe le middleware
+const { checkAuth } = require('../middleware/auth.middleware'); 
 // GET
 router.get("/",getTeams);
 router.get("/:id",getTeam);

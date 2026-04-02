@@ -1,8 +1,9 @@
 const express = require('express');
-const{ getMatchesInTournaments, getMatch, updateMatchScore } = require('../controllers/matches.controller');
+const{ getMatchesInTournaments, getMatch, updateScore } = require('../controllers/matches.controller');
 
 const router = express.Router(); 
-
+// On importe le middleware
+const { checkAuth } = require('../middleware/auth.middleware'); 
 // GET 
 router.get("/tournaments/:id",getMatchesInTournaments)
 router.get("/:id",getMatch);
@@ -10,7 +11,7 @@ router.get("/:id",getMatch);
 
 
 // PATCH
-router.patch("/:id",checkAuth,updateMatchScore);
+router.patch("/:id",checkAuth,updateScore);
 
 // DELETE
 
