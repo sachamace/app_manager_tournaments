@@ -1,5 +1,6 @@
 const PlayersModel = require('../models/players.model');
 const TeamsModel = require('../models/teams.model');
+const AppError = require('../utils/appError.js');
 
 // --- SERVICES GET ---
 
@@ -10,7 +11,7 @@ const getPlayers = async () => {
 const getPlayerById = async (id) => {
     const player = await PlayersModel.findById(id);
     if (!player) {
-        throw { status: 404, message: "Joueur non trouvé" };
+        throw new AppError("Joueur Introuvable", 404);
     }
     return player;
 };
@@ -18,9 +19,14 @@ const getPlayerById = async (id) => {
 // --- SERVICES POST ---
 
 const createPlayer = async (data) => {
+    // 400 = Mauvaise requête (champ manquant)
+    if (!data.pseudo) {
+        throw new AppError("Veuillez fournir un pseudo pour le joueur.", 400);
+    }
+
     return await PlayersModel.create({
         pseudo: data.pseudo,
-        team: data.team
+        team: data.team || null // Assure-toi que team soit null si non fourni
     });
 };
 
@@ -28,7 +34,7 @@ const createPlayer = async (data) => {
 
 const updatePseudo = async (id, pseudo) => {
     if (!pseudo) {
-        throw { status: 400, message: "Veuillez fournir un pseudo." };
+        throw new AppError("Veuillez fournir un pseudo.", 400);
     }
     
     const updatedPlayer = await PlayersModel.findByIdAndUpdate(
@@ -38,7 +44,7 @@ const updatePseudo = async (id, pseudo) => {
     );
     
     if (!updatedPlayer) {
-        throw { status: 404, message: "Ce joueur n'existe pas !" };
+        throw new AppError("Ce joueur n'existe pas !", 404);
     }
     
     return updatedPlayer;
@@ -46,7 +52,7 @@ const updatePseudo = async (id, pseudo) => {
 
 const updateTeam = async (id, team) => {
     if (!team) {
-        throw { status: 400, message: "Veuillez fournir un ID d'équipe." };
+        throw new AppError("Veuillez fournir un ID d'équipe.", 400);
     }
     
     const updatedPlayer = await PlayersModel.findByIdAndUpdate(
@@ -56,7 +62,7 @@ const updateTeam = async (id, team) => {
     );
     
     if (!updatedPlayer) {
-        throw { status: 404, message: "Ce joueur n'existe pas !" };
+        throw new AppError("Ce joueur n'existe pas !", 404);
     }
     
     return updatedPlayer;
@@ -68,7 +74,7 @@ const deletePlayer = async (id) => {
     const deletedPlayer = await PlayersModel.findByIdAndDelete(id);
 
     if (!deletedPlayer) {
-        throw { status: 404, message: "Ce joueur n'existe pas." };
+        throw new AppError("Ce joueur n'existe pas.", 404);
     }
 
     // Si le joueur appartenait à une équipe, on vérifie s'il était capitaine
@@ -95,7 +101,7 @@ const updatePlayer = async (id, data) => {
     if (team) updateData.team = team;
 
     if (Object.keys(updateData).length === 0) {
-        throw { status: 400, message: "Aucune donnée à modifier." };
+        throw new AppError("Aucune donnée à modifier.", 400);
     }
 
     const updatedPlayer = await PlayersModel.findByIdAndUpdate(
@@ -105,7 +111,7 @@ const updatePlayer = async (id, data) => {
     );
 
     if (!updatedPlayer) {
-        throw { status: 404, message: "Ce joueur n'existe pas." };
+        throw new AppError("Ce joueur n'existe pas.", 404);
     }
 
     return updatedPlayer;

@@ -1,5 +1,5 @@
 
-import { API_URL } from './api';
+import { API_URL ,getAuthHeaders} from './api';
 
 // GET 
 export const fetchAllPlayers = async () => {
@@ -36,9 +36,7 @@ export const createPlayer = async (playerData) => {
 
         const response = await fetch(`${API_URL}/players`, {
             method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json', 
-            },
+            headers: getAuthHeaders(),
 
             body: JSON.stringify(playerData),
         });
@@ -59,9 +57,7 @@ export const updatePseudo = async (id,newPseudo) => {
         // 1. On met l'ID dans l'URL
         const response = await fetch(`${API_URL}/players/pseudo/${id}`, {
             method: 'PATCH', // 2. On indique qu'on veut MODIFIER
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders(),
             // 3. On envoie les nouvelles données dans le body
             body: JSON.stringify({ pseudo: newPseudo }), 
         });
@@ -80,9 +76,7 @@ export const updateTeam = async (id,newTeam) => {
         // 1. On met l'ID dans l'URL
         const response = await fetch(`${API_URL}/players/teams/${id}`, {
             method: 'PATCH', // 2. On indique qu'on veut MODIFIER
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders(),
             // 3. On envoie les nouvelles données dans le body
             body: JSON.stringify({ team: newTeam }), 
         });
@@ -102,6 +96,7 @@ export const deletePlayer = async (id) => {
     try {
         const response = await fetch(`${API_URL}/players/${id}`, {
             method: 'DELETE', 
+            headers: getAuthHeaders(),
         });
         
         const data = await response.json();

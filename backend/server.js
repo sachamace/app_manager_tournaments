@@ -2,14 +2,15 @@ const express = require("express");
 const dotenv = require('dotenv').config();
 const connectDB = require("./config/db");
 const cors = require('cors');
-const port = 5000
+const { errorHandler } = require('./middleware/error.middleware');
 
-//connexion à la db 
+
+const port = 5000 
 connectDB();
-
 const app = express();
+
 app.use(cors({
-    origin: '*', // Ou l'URL de ton frontend
+    origin: 'http://localhost:5173/', 
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'] 
 }));
 
@@ -22,5 +23,7 @@ app.use("/teams",require("./routes/teams.routes")); // J'utilise teams
 app.use("/auth",require("./routes/auth.routes")); // J'utilise auth
 app.use("/matches",require("./routes/matches.routes")); // J'utilise matches
 app.use("/players",require("./routes/players.routes")); // J'utilise players
+
+app.use(errorHandler);
 
 app.listen(port, () => console.log("Le serveur a démarré au port " + port));

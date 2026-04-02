@@ -10,7 +10,7 @@ router.get("/:id",getMatch);
 
 
 // PATCH
-router.patch("/:id",updateMatchScore);
+router.patch("/:id",checkAuth,updateMatchScore);
 
 // DELETE
 

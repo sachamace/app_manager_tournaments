@@ -1,5 +1,5 @@
 
-import { API_URL } from './api';
+import { API_URL ,getAuthHeaders} from './api';
 // GET
 export const fetchAllMatches = async () => {
     try {
@@ -36,9 +36,7 @@ export const updateMatchScore = async (matchId, newScores) => {
         // 1. On met l'ID dans l'URL
         const response = await fetch(`${API_URL}/matches/${matchId}`, {
             method: 'PATCH', // 2. On indique qu'on veut MODIFIER
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders(),
             // 3. On envoie les nouvelles données dans le body
             body: JSON.stringify({ scores: newScores }), 
         });

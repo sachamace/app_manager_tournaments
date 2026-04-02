@@ -1,58 +1,59 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const saltRounds = 10; // Facteur de travail
 
 const AccountModel = require('../models/auth.model');
+const AppError = require('../utils/appError.js');
 
 const hashPassword = async (plainPassword) => {
-  try {
-    const salt = await bcrypt.genSalt(saltRounds);
-    const hashedPassword = await bcrypt.hash(plainPassword, salt);
-    return hashedPassword;
-  } catch (error) {
-    console.error('Erreur lors du hachage du mot de passe :', error);
-    throw error;
-  }
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hashedPassword = await bcrypt.hash(plainPassword, salt);
+  return hashedPassword;
 };
 
+const getAuthsLogic = async () => {
+    return await AccountModel.find();
+};
+
+const getAuthLogic = async (id) => {
+    return await AccountModel.findById(id);
+};
 
 const verifyPassword = async (plainPassword, hashedPassword) => {
-  try {
-    const match = await bcrypt.compare(plainPassword, hashedPassword);
-    if (match) {
-      console.log('✅ Mot de passe valide');
-    } else {
-      console.log('❌ Mot de passe invalide');
-    }
-    return match;
-  } catch (error) {
-    console.error('Erreur lors de la vérification du mot de passe :', error);
-    throw error;
-  }
+  return await bcrypt.compare(plainPassword, hashedPassword);
 };
 
 const connectAuthLogic = async (mail, mdp) => {
 
-    if (!mail) throw new Error("Merci de fournir un email !");
-    if (!mdp) throw new Error("Merci de fournir un mot de passe !");
+    if (!mail) throw new AppError("Merci de fournir un email !", 400);
+    if (!mdp) throw new AppError("Merci de fournir un mot de passe !", 400);
 
 
     const user = await AccountModel.findOne({ mail: mail });
-    if (!user) throw new Error("Utilisateur non trouvé !");
+    if (!user) throw new AppError("Utilisateur non trouvé !", 404);
 
     const isVerif = await verifyPassword(mdp,user.mdp);
     if (!isVerif) {
-        throw new Error("Mot de passe incorrect !");
+      throw new AppError("Mot de passe incorrect !", 401);
     }
-
-    return user;
+    // Création du token
+    const token = jwt.sign(
+        { id: user._id }, // Le payload : les infos qu'on stocke dans le token (PAS DE MOT DE PASSE ICI)
+        process.env.JWT_SECRET, // Ta clé secrète
+        { expiresIn: '24h' } 
+    );
+    return {user,token};
 };
 
 const setAuthLogic = async (pseudo,mail,mdp,birthday) => {
-    if(!pseudo) throw new Error("Merci d'ajouter un pseudo !");
+    if(!pseudo) throw new AppError("Merci d'ajouter un pseudo !", 400);
     
-    if(!mail) throw new Error("Merci d'ajouter un email !");
-    if(!mdp) throw new Error("Merci d'ajouter un mot de passe !");
-
+    if(!mail) throw new AppError("Merci d'ajouter un email !", 400);
+    if(!mdp) throw new AppError("Merci d'ajouter un mot de passe !", 400);
+    const emailExiste = await AccountModel.findOne({ mail: mail });
+    if (emailExiste) {
+        throw new AppError("Cet email est déjà utilisé !", 409); // 409 = Conflit
+    }
     const hashmdp = await hashPassword(mdp);
 
     const account = await AccountModel.create({
@@ -71,7 +72,7 @@ const setAuthLogic = async (pseudo,mail,mdp,birthday) => {
 
 const updateAuthLogic = async (idAuth, donneesRecues) => {
     const account = await AccountModel.findById(idAuth);
-    if (!account) throw new Error("Compte introuvable");
+    if (!account) throw new AppError("Compte introuvable", 404);
 
     // 1. La "Whitelist" : Les champs qu'on AUTORISE à modifier
     const champsAutorises = ['pseudo', 'mail', 'birthday', 'mdp'];
@@ -98,4 +99,10 @@ const updateAuthLogic = async (idAuth, donneesRecues) => {
     
     return updateAccount;
 }
-module.exports = {connectAuthLogic,setAuthLogic,updateAuthLogic}
+module.exports = {
+  getAuthsLogic,
+  getAuthLogic,
+  connectAuthLogic,
+  setAuthLogic,
+  updateAuthLogic
+};

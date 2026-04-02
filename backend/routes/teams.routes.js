@@ -12,15 +12,15 @@ router.get("/players/:id",getPlayerInTeam);
 router.get("/captain/:id",getCaptainTeam);
 
 // POST 
-router.post("/",createTeam);
-router.post("/players/id",addPlayerInTeam);
-router.post("/captain/:id",addCaptainInTeam);
+router.post("/",checkAuth,createTeam);
+router.post("/players/id",checkAuth,addPlayerInTeam);
+router.post("/captain/:id",checkAuth,addCaptainInTeam);
 
 // PATCH
-router.patch("/:id", updateTeam);
+router.patch("/:id",checkAuth, updateTeam);
 
 // DELETE
-router.delete("/:id",deleteTeam)
+router.delete("/:id",checkAuth,deleteTeam)
 // PUT
 
 module.exports = router 

@@ -1,5 +1,5 @@
 
-import { API_URL } from './api';
+import { API_URL ,getAuthHeaders} from './api';
 
 // GET
 export const fetchAllAuth = async () => {
@@ -69,6 +69,11 @@ export const connectAuth = async (mail,mdp) => {
         }
 
         const data = await response.json();
+        
+        if (response.ok && data.token) {
+            localStorage.setItem('token', data.token); // On le sauvegarde dans le navigateur
+        }
+
         return data; 
         
     } catch (error) {
@@ -125,3 +130,9 @@ export const changePassword = async (id, newMdp) => {
 
 
 // DELETE
+
+
+
+export const logoutUser = () => {
+    localStorage.removeItem('token'); // On détruit le token
+};

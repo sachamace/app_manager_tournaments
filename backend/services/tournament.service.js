@@ -1,8 +1,10 @@
 const MatchesModel = require('../models/matches.model');
 const TournamentsModel = require('../models/tournaments.model');
-const { deleteTeamLogic } = require('../services/team.service'); // Attention au chemin selon la structure de ton projet
+const AppError = require('../utils/appError');
+const { deleteTeamLogic } = require('../services/team.service'); 
 
-// --- FONCTION UTILITAIRE ---
+// --- FONCTIONS UTILITAIRES ---
+
 const shuffleArray = (array) => {
     const shuffled = [...array]; 
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -11,6 +13,64 @@ const shuffleArray = (array) => {
     }
     return shuffled;
 };
+
+
+
+const generateEliminationMatches = (teams, tournamentId) => {
+    const matchesToCreate = [];
+    let matchIndex = 1; 
+    for (let i = 0; i < teams.length; i += 2) {
+        const teamA = teams[i];
+        const teamB = teams[i + 1]; 
+        const newMatch = { tournament: tournamentId, round: 1, matchNumber: matchIndex };
+        if (teamB) {
+            newMatch.teams = [teamA, teamB];
+        } else {
+            newMatch.teams = [teamA];
+            newMatch.winner = teamA;
+        }
+        matchesToCreate.push(newMatch);
+        matchIndex++;
+    }
+    return matchesToCreate;
+};
+
+const generateChampionnatMatches = (teams, tournamentId) => {
+    const championnatMatches = [];
+    let champMatchIndex = 1;
+    for (let i = 0; i < teams.length; i++) {
+        for (let j = i + 1; j < teams.length; j++) {
+            championnatMatches.push({
+                tournament: tournamentId,
+                teams: [teams[i], teams[j]],
+                round: 1,
+                matchNumber: champMatchIndex
+            });
+            champMatchIndex++;
+        }
+    }
+    return championnatMatches;
+};
+
+const generateSuisseMatches = (teams, tournamentId) => {
+    const swissMatches = [];
+    let swissMatchIndex = 1;
+    for (let i = 0; i < teams.length; i += 2) {
+        const teamA = teams[i];
+        const teamB = teams[i + 1];
+        const newMatch = { tournament: tournamentId, round: 1, matchNumber: swissMatchIndex };
+        if (teamB) {
+            newMatch.teams = [teamA, teamB];
+        } else {
+            newMatch.teams = [teamA];
+            newMatch.winner = teamA; 
+        }
+        swissMatches.push(newMatch);
+        swissMatchIndex++;
+    }
+    return swissMatches;
+};
+
 
 // --- SERVICES ---
 
@@ -23,12 +83,14 @@ const getTournamentByAccount = async (accountId) => {
 };
 
 const getTournamentById = async (id) => {
-    return await TournamentsModel.findById(id);
+    const tournament = await TournamentsModel.findById(id);
+    if (!tournament) throw new AppError("Tournoi introuvable", 404); 
+    return tournament;
 };
 
 const getBracket = async (id) => {
     const tournament = await TournamentsModel.findById(id);
-    if (!tournament) throw { status: 404, message: "Tournoi non trouvé" };
+    if (!tournament) throw new AppError("Tournoi introuvable", 404);
     return tournament.tree_type;
 };
 
@@ -39,17 +101,20 @@ const getTeamsRegister = async (id) => {
             path: 'players'
         }
     });
-    if (!tournament) throw { status: 404, message: "Tournoi non trouvé" };
+    if (!tournament) throw new AppError("Tournoi introuvable", 404);
     return tournament.list_teams;
 };
 
 const getRanking = async (id) => {
     const tournament = await TournamentsModel.findById(id);
-    if (!tournament) throw { status: 404, message: "Tournoi non trouvé" };
+    if (!tournament) throw new AppError("Tournoi introuvable", 404);
     return tournament.classement;
 };
 
 const addTournament = async (data) => {
+    if (!data || Object.keys(data).length === 0) {
+        throw new AppError("Veuillez fournir les données du tournoi", 400); 
+    }
     return await TournamentsModel.create(data);
 };
 
@@ -60,96 +125,45 @@ const addTeamsAtTournament = async (id, elementIdToAdd) => {
         { returnDocument: 'after', runValidators: true }
     );
     
-    if (!updateTournament) {
-        throw { status: 404, message: "Le tournoi est introuvable." };
-    }
+    if (!updateTournament) throw new AppError("Tournoi introuvable", 404);
+    
     return updateTournament;
 };
+
 
 const startTournament = async (tournamentId) => {
     const tournament = await TournamentsModel.findById(tournamentId);
 
-    if (!tournament) {
-        throw { status: 404, message: "Tournoi introuvable." };
-    }
+    if (!tournament) throw new AppError("Tournoi introuvable", 404);
 
     if (tournament.statut === "en_cours" || tournament.statut === "fini") {
-        throw { status: 400, message: "Le tournoi a déjà été lancé ou est terminé." };
+        throw new AppError("Le tournoi a déjà été lancé ou est terminé.", 400);
     }
 
     if (!tournament.list_teams || tournament.list_teams.length <= 1) {
-        throw { status: 400, message: "Impossible de lancer un tournoi sans équipes ou avec une seule équipe." };
+        throw new AppError("Impossible de lancer un tournoi sans équipes ou avec une seule équipe.", 400);
     }
 
     const randomTeams = shuffleArray(tournament.list_teams);
     const typeArbre = tournament.tree_type;
-    let totalMatchesCreated = 0;
-    let createdMatchesResult = [];
+    let matchesToCreate = [];
 
+    // Le switch ne fait plus que distribuer le travail aux fonctions utilitaires
     switch (typeArbre) {
         case "elimination":
-            const matchesToCreate = [];
-            let matchIndex = 1; 
-            for (let i = 0; i < randomTeams.length; i += 2) {
-                const teamA = randomTeams[i];
-                const teamB = randomTeams[i + 1]; 
-                const newMatch = { tournament: tournamentId, round: 1, matchNumber: matchIndex };
-                if (teamB) {
-                    newMatch.teams = [teamA, teamB];
-                } else {
-                    newMatch.teams = [teamA];
-                    newMatch.winner = teamA; 
-                }
-                matchesToCreate.push(newMatch);
-                matchIndex++;
-            }
-            createdMatchesResult = await MatchesModel.insertMany(matchesToCreate);
-            totalMatchesCreated = createdMatchesResult.length;
+            matchesToCreate = generateEliminationMatches(randomTeams, tournamentId);
             break;
-
         case "championnat":
-            const championnatMatches = [];
-            let champMatchIndex = 1;
-            for (let i = 0; i < randomTeams.length; i++) {
-                for (let j = i + 1; j < randomTeams.length; j++) {
-                    const teamA = randomTeams[i];
-                    const teamB = randomTeams[j];
-                    championnatMatches.push({
-                        tournament: tournamentId,
-                        teams: [teamA, teamB],
-                        round: 1,
-                        matchNumber: champMatchIndex
-                    });
-                    champMatchIndex++;
-                }
-            }
-            createdMatchesResult = await MatchesModel.insertMany(championnatMatches);
-            totalMatchesCreated = createdMatchesResult.length;
+            matchesToCreate = generateChampionnatMatches(randomTeams, tournamentId);
             break;
-
         case "suisse":
-            const swissMatches = [];
-            let swissMatchIndex = 1;
-            for (let i = 0; i < randomTeams.length; i += 2) {
-                const teamA = randomTeams[i];
-                const teamB = randomTeams[i + 1];
-                const newMatch = { tournament: tournamentId, round: 1, matchNumber: swissMatchIndex };
-                if (teamB) {
-                    newMatch.teams = [teamA, teamB];
-                } else {
-                    newMatch.teams = [teamA];
-                    newMatch.winner = teamA; 
-                }
-                swissMatches.push(newMatch);
-                swissMatchIndex++;
-            }
-            createdMatchesResult = await MatchesModel.insertMany(swissMatches);
-            totalMatchesCreated = createdMatchesResult.length;
+            matchesToCreate = generateSuisseMatches(randomTeams, tournamentId);
             break;
-
         default:
-            throw { status: 400, message: "Type d'arbre non reconnu : " + typeArbre };
+            throw new AppError("Type d'arbre non reconnu : " + typeArbre, 400);
     }
+
+    const createdMatchesResult = await MatchesModel.insertMany(matchesToCreate);
 
     await TournamentsModel.findByIdAndUpdate(tournamentId, {
         $set: { statut: "en_cours" }
@@ -158,7 +172,7 @@ const startTournament = async (tournamentId) => {
     return {
         message: `Tournoi au format ${typeArbre} généré et démarré avec succès !`,
         statut: "en_cours",
-        totalMatchesCreated: totalMatchesCreated,
+        totalMatchesCreated: createdMatchesResult.length,
         matches: createdMatchesResult 
     };
 };
@@ -168,7 +182,7 @@ const generateNextRound = async (tournamentId) => {
                                        .sort({ round: -1, matchNumber: 1 });
 
     if (!allMatches || allMatches.length === 0) {
-        throw { status: 404, message: "Aucun match trouvé pour ce tournoi. L'avez-vous démarré ?" };
+        throw new AppError("Aucun match trouvé pour ce tournoi. L'avez-vous démarré ?", 404);
     }
 
     const currentRoundNumber = allMatches[0].round;
@@ -176,7 +190,7 @@ const generateNextRound = async (tournamentId) => {
 
     const unfinishedMatches = currentRoundMatches.filter(m => !m.winner);
     if (unfinishedMatches.length > 0) {
-        throw { status: 400, message: `Impossible de générer le tour suivant : il reste ${unfinishedMatches.length} match(s) non terminé(s) au round ${currentRoundNumber}.` };
+        throw new AppError(`Impossible de générer le tour suivant : il reste ${unfinishedMatches.length} match(s) non terminé(s) au round ${currentRoundNumber}.`, 400); 
     }
 
     const winners = currentRoundMatches.map(m => m.winner);
@@ -222,9 +236,7 @@ const generateNextRound = async (tournamentId) => {
 
 const cancelTournament = async (idTournament) => {
     const tournament = await TournamentsModel.findById(idTournament);
-    if (!tournament) {
-        throw { status: 404, message: "Tournoi introuvable." };
-    }
+    if (!tournament) throw new AppError("Tournoi introuvable.", 404);
 
     const deletedMatches = await MatchesModel.deleteMany({ tournament: idTournament });
     tournament.statut = 'en_attente';
@@ -235,9 +247,7 @@ const cancelTournament = async (idTournament) => {
 
 const deleteTournament = async (tournamentId) => {
     const deleteTournament = await TournamentsModel.findByIdAndDelete(tournamentId);
-    if (!deleteTournament) {
-        throw { status: 404, message: "Ce tournoi est introuvable." };
-    }
+    if (!deleteTournament) throw new AppError("Tournoi introuvable.", 404);
 
     const deletedMatches = await MatchesModel.deleteMany({ tournament: tournamentId });
     return { matchesDeleted: deletedMatches.deletedCount };
@@ -245,18 +255,16 @@ const deleteTournament = async (tournamentId) => {
 
 const deleteAllTeamInTournament = async (tournamentId) => {
     const tournament = await TournamentsModel.findById(tournamentId);
-    if (!tournament) {
-        throw { status: 404, message: "Tournoi introuvable." };
-    }
+    if (!tournament) throw new AppError("Tournoi introuvable.", 404);
 
     if (!tournament.list_teams || tournament.list_teams.length === 0) {
-        throw { status: 400, message: "Il n'y a aucune équipe à supprimer dans ce tournoi." };
+        throw new AppError("Il n'y a aucune équipe à supprimer dans ce tournoi.", 400);
     }
 
     const deletePromises = tournament.list_teams.map(teamId => deleteTeamLogic(teamId));
     await Promise.all(deletePromises);
     
-    return true; // Succès
+    return true; 
 };
 
 module.exports = {

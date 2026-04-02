@@ -7,13 +7,13 @@ const router = express.Router();
 router.get("/",getPlayers);
 router.get("/:id",getPlayer);
 // POST
-router.post("/",createPlayer);
+router.post("/",checkAuth,createPlayer);
 // PATCH
-router.patch("/pseudo/:id",updatePseudo);
-router.patch("/team/:id",updateTeam);
+router.patch("/pseudo/:id",checkAuth,updatePseudo);
+router.patch("/team/:id",checkAuth,updateTeam);
 // DELETE
-router.delete("/:id",deletePlayer);
+router.delete("/:id",checkAuth,deletePlayer);
 // PUT
-router.put("/:id",updatePlayer);
+router.put("/:id",checkAuth,updatePlayer);
 
 module.exports = router 

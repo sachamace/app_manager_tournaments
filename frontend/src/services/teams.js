@@ -1,5 +1,5 @@
 
-import { API_URL } from './api';
+import { API_URL ,getAuthHeaders} from './api';
 
 
 // GET 
@@ -85,9 +85,7 @@ export const createTeam = async (teamsData) => {
 
         const response = await fetch(`${API_URL}/teams`, {
             method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json', 
-            },
+            headers: getAuthHeaders(),
 
             body: JSON.stringify(teamsData),
         });
@@ -106,9 +104,7 @@ export const addPlayerInTeam = async (id) => {
 
         const response = await fetch(`${API_URL}/teams/players/${id}`, {
             method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json', 
-            },
+            headers: getAuthHeaders(),
 
             body: JSON.stringify(id),
         });
@@ -127,9 +123,7 @@ export const addCaptainInTeam = async (id) => {
 
         const response = await fetch(`${API_URL}/teams/captain/${id}`, {
             method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json', 
-            },
+            headers: getAuthHeaders(),
 
             body: JSON.stringify(id),
         });
@@ -149,9 +143,7 @@ export const updateTeam = async (id, teamData) => {
     try {
         const response = await fetch(`${API_URL}/teams/${id}`, {
             method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders(),
             body: JSON.stringify(teamData),
         });
 
@@ -174,6 +166,7 @@ export const deleteTeam = async (id) => {
     try {
         const response = await fetch(`${API_URL}/teams/${id}`,{
             method: 'DELETE', 
+            headers: getAuthHeaders(),
         });
         
         if (!response.ok) {

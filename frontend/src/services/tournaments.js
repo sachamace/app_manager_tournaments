@@ -1,6 +1,5 @@
 
-import { API_URL } from './api';
-
+import { API_URL ,getAuthHeaders } from './api';
 
 // GET 
 export const fetchAllTournaments = async () => {
@@ -92,9 +91,7 @@ export const addTournament = async (tournamentData) => {
 
         const response = await fetch(`${API_URL}/tournaments`, {
             method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json', 
-            },
+            headers: getAuthHeaders(),
 
             body: JSON.stringify(tournamentData),
         });
@@ -113,9 +110,7 @@ export const addTeamsAtTournament = async (tournamentid,teamID) => {
 
         const response = await fetch(`${API_URL}/tournaments/${tournamentid}/participants`, {
             method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json', 
-            },
+            headers: getAuthHeaders(),
 
             body: JSON.stringify(teamID),
         });
@@ -135,9 +130,7 @@ export const startTournament = async (id) => {
 
         const response = await fetch(`${API_URL}/tournaments/${id}/start`, {
             method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json', 
-            },
+            headers: getAuthHeaders(),
 
             // Inutile d'envoyer un body
         });
@@ -160,9 +153,7 @@ export const cancelTournament = async (id) => {
 
         const response = await fetch(`${API_URL}/tournaments/${id}/reset`, {
             method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json', 
-            },
+            headers: getAuthHeaders(),
 
         });
 
@@ -184,9 +175,7 @@ export const generateNextRound = async (id) => {
 
         const response = await fetch(`${API_URL}/tournaments/${id}/next-round`, {
             method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json', 
-            },
+            headers: getAuthHeaders(),
 
         });
 
@@ -210,6 +199,7 @@ export const deleteTournament = async (id) => {
     try {
         const response = await fetch(`${API_URL}/tournaments/${id}`, {
             method: 'DELETE', 
+            headers: getAuthHeaders(),
         });
         
         const data = await response.json();

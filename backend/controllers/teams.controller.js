@@ -1,158 +1,125 @@
 const TeamsModel = require('../models/teams.model');
+const asyncHandler = require('express-async-handler');
 
-
-const { deleteTeamLogic , createTeamLogic , addCaptainInTeamLogic} = require('../services/team.service');
+const { 
+    getTeamsLogic,
+    getTeamLogic,
+    getHistoricalMatchesLogic,
+    getCaptainTeamLogic,
+    getPlayerInTeamLogic,
+    addPlayerInTeamLogic,
+    deleteTeamLogic, 
+    createTeamLogic, 
+    addCaptainInTeamLogic
+} = require('../services/team.service');
 
 // Les controllers GET 
 
-module.exports.getTeams = async(req,res) =>{
-    const teams = await TeamsModel.find();
+module.exports.getTeams = asyncHandler(async (req, res) => {
+    const teams = await getTeamsLogic();
     res.status(200).json(teams);
-};
+});
 
-module.exports.getTeam = async(req,res) =>{
-    // On utilise .populate() pour récupérer les détails des joueurs, pas seulement leurs IDs.
-    const team = await TeamsModel.findById(req.params.id).populate('players');
+module.exports.getTeam = asyncHandler(async (req, res) => {
+    const team = await getTeamLogic(req.params.id);
     if (!team) {
-        // Le message était incorrect, il s'agit d'une équipe
         return res.status(404).json({ message: "Équipe non trouvée" });
     }
     res.status(200).json(team);
-};
+});
 
-module.exports.getHistoricalMatches = async(req,res)=>{
-    const team = await TeamsModel.findById(req.params.id);
-    if (!team) {
-        return res.status(404).json({ message: "Matches non trouvés" });
+module.exports.getHistoricalMatches = asyncHandler(async (req, res) => {
+    const matches = await getHistoricalMatchesLogic(req.params.id);
+    if (!matches) {
+        return res.status(404).json({ message: "Équipe ou matches non trouvés" });
     }
-    res.status(200).json(team.matches); 
-};
+    res.status(200).json(matches); 
+});
 
-module.exports.getCaptainTeam = async(req,res)=>{
-    const team = await TeamsModel.findById(req.params.id);
-    if (!team) {
-        return res.status(404).json({ message: "Captaine non trouvé" });
+module.exports.getCaptainTeam = asyncHandler(async (req, res) => {
+    const captain = await getCaptainTeamLogic(req.params.id);
+    if (!captain) {
+        return res.status(404).json({ message: "Équipe ou capitaine non trouvé" });
     }
-    res.status(200).json(team.captain); 
-};
+    res.status(200).json(captain); 
+});
 
-module.exports.getPlayerInTeam = async(req,res)=>{
-    const team = await TeamsModel.findById(req.params.id);
-    if (!team) {
-        return res.status(404).json({ message: "Joueurs non trouvés" });
+module.exports.getPlayerInTeam = asyncHandler(async (req, res) => {
+    const players = await getPlayerInTeamLogic(req.params.id);
+    if (!players) {
+        return res.status(404).json({ message: "Équipe ou joueurs non trouvés" });
     }
-    res.status(200).json(team.players); 
-};
+    res.status(200).json(players); 
+});
 
 
 // Les controllers Set 
 
-module.exports.createTeam = async(req,res) => {
-    try {
-        const teamData = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
-        
-        const team = await createTeamLogic(teamData);
+module.exports.createTeam = asyncHandler(async(req,res) => {
+    const teamData = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
+    
+    const team = await createTeamLogic(teamData);
 
-        res.status(201).json(team);
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Erreur serveur", error: error.message });
+    res.status(201).json(team);
+});
+
+module.exports.addPlayerInTeam = asyncHandler(async (req, res) => {
+    const teamId = req.params.id;
+    const elementIdToAdd = req.body;
+    const updatedTeam = await addPlayerInTeamLogic(teamId, elementIdToAdd);
+
+    if (!updatedTeam) {
+        return res.status(404).json({ message: "La team est introuvable." });
     }
-};
 
-module.exports.addPlayerInTeam = async(req,res) => {
-    try {
-        const userId = req.params.id
-        const elementIdToAdd = req.body
-        const team = await TeamsModel.findById(userId);
+    return res.status(200).json({
+        message: "Joueur ajouté dans la team avec succès !",
+        data: updatedTeam 
+    });
 
-        if (!team) {
-            return res.status(404).json({ message: "La team est introuvable." });
-        }
-        
-        const updatedTeam = await TeamsModel.findByIdAndUpdate(
-            userId,
-            { $addToSet: { players: elementIdToAdd } },
-            { returnDocument: 'after', runValidators: true }
-        );
+});
 
-        return res.status(200).json({
-            message: "Player ajouté dans la team avec succès !",
-            data: updatedTeam 
-        });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Erreur serveur", error: error.message });
-    }
-};
+module.exports.addCaptainInTeam = asyncHandler(async(req,res) => {
+    const userId = req.params.id
+    const elementIdToAdd = req.body
 
-module.exports.addCaptainInTeam = async(req,res) => {
-    try {
-        const userId = req.params.id
-        const elementIdToAdd = req.body
+    const updatedTeam = await addCaptainInTeamLogic(userId,elementIdToAdd);
 
-        const updatedTeam = await addCaptainInTeamLogic(userId,elementIdToAdd);
-
-        return res.status(200).json({
-            message: "Un capitaine est ajouté dans la team avec succès !",
-            data: updatedTeam 
-        });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Erreur serveur", error: error.message });
-    }
-};
+    return res.status(200).json({
+        message: "Un capitaine est ajouté dans la team avec succès !",
+        data: updatedTeam 
+    });
+});
 
 
 // Patch 
-module.exports.updateTeam = async (req,res) => {
-    try {
-        const teamId = req.params.id;
-        const updateData = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
+module.exports.updateTeam = asyncHandler(async (req, res) => {
+    const teamId = req.params.id;
+    const updateData = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
 
-        if (updateData && updateData.tournament) { 
-            delete updateData.tournament;
-        }
+    const updatedTeam = await updateTeamLogic(teamId, updateData);
 
-        const updatedTeam = await TeamsModel.findByIdAndUpdate(
-            teamId,
-            { $set: updateData },
-            { returnDocument: 'after', runValidators: true }
-        );
-
-        console.log("Résultat de la mise à jour (updatedTeam) :", updatedTeam);
-
-        if (!updatedTeam) {
-            return res.status(404).json({ message: "Équipe non trouvée." });
-        }
-
-        return res.status(200).json(updatedTeam);
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Erreur serveur", error: error.message });
+    if (!updatedTeam) {
+        return res.status(404).json({ message: "Équipe non trouvée." });
     }
-};
+
+    return res.status(200).json(updatedTeam);
+});
 
 // DELETE 
 
-module.exports.deleteTeam = async (req,res) => {
-    try {
-        const teamId = req.params.id;
+module.exports.deleteTeam = asyncHandler(async (req,res) => {
+    const teamId = req.params.id;
 
-        // On appelle notre service neutre
-        const result = await deleteTeamLogic(teamId);
-        
-        if (!result) {
-            return res.status(404).json({ message: "Cette team est introuvable." });
-        }
-        
-        return res.status(200).json({ 
-            message: "L'équipe a été supprimée avec succès.",
-            playersDelete: result.deletedPlayersCount
-        });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Erreur serveur", error: error.message }); 
+    // On appelle notre service neutre
+    const result = await deleteTeamLogic(teamId);
+    
+    if (!result) {
+        return res.status(404).json({ message: "Cette team est introuvable." });
     }
-};
+    
+    return res.status(200).json({ 
+        message: "L'équipe a été supprimée avec succès.",
+        playersDelete: result.deletedPlayersCount
+    });
+});
