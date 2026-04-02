@@ -24,12 +24,12 @@ const verifyPassword = async (plainPassword, hashedPassword) => {
 };
 
 const connectAuthLogic = async (mail, mdp) => {
-
+    console.log("Recherche de l'email :", `|${mail}|`);
     if (!mail) throw new AppError("Merci de fournir un email !", 400);
     if (!mdp) throw new AppError("Merci de fournir un mot de passe !", 400);
 
 
-    const user = await AccountModel.findOne({ mail: mail });
+    const user = await AccountModel.findOne({ mail: mail.toLowerCase().trim()});
     if (!user) throw new AppError("Utilisateur non trouvé !", 404);
 
     const isVerif = await verifyPassword(mdp,user.mdp);
