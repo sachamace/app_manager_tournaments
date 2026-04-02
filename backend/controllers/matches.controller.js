@@ -35,11 +35,6 @@ module.exports.getMatch = async(req,res) => {
     res.status(200).json(match);
 };
 
-
-// Les controllers Post 
-
-
-
 // Les controllers Patch 
 
 exports.updateScore = async (req, res) => {

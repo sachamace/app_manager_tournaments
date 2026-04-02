@@ -45,12 +45,19 @@ module.exports.connectAuth = async (req, res) => {
 
 // Controllers pour patch 
 
-module.exports.changePassword = async (req,res) => {
+// Dans controllers/auth.controller.js
+
+module.exports.updateAccount = async (req, res) => {
     try {
-        const newMdp = req.body.newMdp;
         const idAccount = req.params.id;
-        const updateAccount = await changePasswordLogic(idAccount,newMdp);
-        return res.status(200).json({ message: "Modification de mot de passe réussie", updateAccount });
+        const donneesAModifier = req.body; 
+
+        const accountUpdated = await updateAuthLogic(idAccount, donneesAModifier);
+
+        return res.status(200).json({ 
+            message: "Profil mis à jour avec succès", 
+            user: accountUpdated 
+        });
     } catch (error) {
         return res.status(400).json({ message: error.message });
     }

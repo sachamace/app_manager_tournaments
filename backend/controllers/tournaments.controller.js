@@ -1,426 +1,155 @@
-const MatchesModel = require('../models/matches.model');
-const TournamentsModel = require('../models/tournaments.model');
-const { deleteTeamLogic } = require('../services/team.service');
-// Les fonctions utilisés 
-const shuffleArray = (array) => {
-    // On crée une copie du tableau pour ne pas casser la donnée d'origine
-    const shuffled = [...array]; 
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        // On échange la position de deux éléments
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; 
-    }
-    return shuffled;
-};
+const tournamentService = require('../services/tournament.service');
 
-// Les controllers GET
+// --- Contrôleurs GET ---
 
-module.exports.getTournaments = async(req,res) =>{
-    const tournaments = await TournamentsModel.find();
-    res.status(200).json(tournaments);
-};
-module.exports.getTournamentByAccount  = async(req,res) =>{
-    const accountId = req.params.accountId;
-    const tournaments = await TournamentsModel.find({account: accountId});
-    res.status(200).json(tournaments);
-};
-module.exports.getTournament = async(req,res) =>{
-    const tournament = await TournamentsModel.findById(req.params.id);
-    if (!tournament) {
-        return res.status(404).json({ message: "Tournoi non trouvé" });
-    }
-    res.status(200).json(tournament);
-};
-
-module.exports.getBracket = async(req,res) => {
-    const tournament = await TournamentsModel.findById(req.params.id);
-    if (!tournament) {
-        return res.status(404).json({ message: "Tournoi non trouvé" });
-    }
-    res.status(200).json(tournament.tree_type);
-};
-
-module.exports.getTeamsRegister = async(req,res) => {
-    const tournament = await TournamentsModel.findById(req.params.id).populate({
-        path: 'list_teams',
-        populate: {
-            path: 'players' // On récupère aussi les infos détaillées des joueurs !
-        }
-    });
-    if (!tournament) {
-        return res.status(404).json({ message: "Tournoi non trouvé" });
-    }
-    res.status(200).json(tournament.list_teams);
-};
-
-module.exports.getRanking = async(req,res) => {
-    const tournament = await TournamentsModel.findById(req.params.id);
-    if (!tournament) {
-        return res.status(404).json({ message: "Tournoi non trouvé" });
-    }
-    res.status(200).json(tournament.classement);
-};
-
-// Les controllers POST 
-
-module.exports.addTournament = async(req,res) => {
-    const {title,games, tree_type, cashprize, list_teams,account,classement} = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
-    const tournament = await TournamentsModel.create({
-        title,
-        games,
-        tree_type,
-        cashprize,
-        list_teams,
-        account,
-        classement
-    });
-    res.status(200).json(tournament);
-};
-
-module.exports.addTeamsAtTournament = async(req,res) => {
+module.exports.getTournaments = async (req, res) => {
     try {
-        const userId = req.params.id
-        const elementIdToAdd = req.body
-        const updateTournament = await TournamentsModel.findByIdAndUpdate(
-            userId,
-            {
-                $addToSet: {list_teams: elementIdToAdd}
-            },
-            {
-                returnDocument: 'after',
-                runValidators: true
-            }
-        );
-        
-        if(!updateTournament){
-            return res.status(404).json({ message: "Le tournoi est introuvable." });
-        }
+        const tournaments = await tournamentService.getTournaments();
+        res.status(200).json(tournaments);
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
 
+module.exports.getTournamentByAccount = async (req, res) => {
+    try {
+        const tournaments = await tournamentService.getTournamentByAccount(req.params.accountId);
+        res.status(200).json(tournaments);
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+module.exports.getTournament = async (req, res) => {
+    try {
+        const tournament = await tournamentService.getTournamentById(req.params.id);
+        if (!tournament) {
+            return res.status(404).json({ message: "Tournoi non trouvé" });
+        }
+        res.status(200).json(tournament);
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+module.exports.getBracket = async (req, res) => {
+    try {
+        const treeType = await tournamentService.getBracket(req.params.id);
+        res.status(200).json(treeType);
+    } catch (error) {
+        if (error.status) return res.status(error.status).json({ message: error.message });
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+module.exports.getTeamsRegister = async (req, res) => {
+    try {
+        const listTeams = await tournamentService.getTeamsRegister(req.params.id);
+        res.status(200).json(listTeams);
+    } catch (error) {
+        if (error.status) return res.status(error.status).json({ message: error.message });
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+module.exports.getRanking = async (req, res) => {
+    try {
+        const ranking = await tournamentService.getRanking(req.params.id);
+        res.status(200).json(ranking);
+    } catch (error) {
+        if (error.status) return res.status(error.status).json({ message: error.message });
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+// --- Contrôleurs POST ---
+
+module.exports.addTournament = async (req, res) => {
+    try {
+        const data = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
+        const tournament = await tournamentService.addTournament(data);
+        res.status(200).json(tournament);
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+module.exports.addTeamsAtTournament = async (req, res) => {
+    try {
+        const updateTournament = await tournamentService.addTeamsAtTournament(req.params.id, req.body);
         return res.status(200).json({
             message: "Teams ajouté dans le tournoi avec succès !",
             data: updateTournament
         });
     } catch (error) {
-        console.error(error);
+        if (error.status) return res.status(error.status).json({ message: error.message });
         return res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
-// Permet de start le tournoi en fonction de son type.
+
 module.exports.startTournament = async (req, res) => {
     try {
-        const tournamentId = req.params.id;
-
-        const tournament = await TournamentsModel.findById(tournamentId);
-
-        if (!tournament) {
-            return res.status(404).json({ message: "Tournoi introuvable." });
-        }
-
-        
-        if (tournament.statut === "en_cours" || tournament.statut === "fini") {
-            return res.status(400).json({ message: "Le tournoi a déjà été lancé ou est terminé." });
-        }
-
-        // 1. On vérifie s'il y a des équipes inscrites
-        if (!tournament.list_teams || tournament.list_teams.length === 0 || tournament.list_teams.length === 1) {
-            return res.status(400).json({ message: "Impossible de lancer un tournoi sans équipes ou une seule équipes." });
-        }
-
-        // 2. On mélange aléatoirement les équipes
-        const randomTeams = shuffleArray(tournament.list_teams);
-
-        // 3. On récupère le type d'arbre
-        const typeArbre = tournament.tree_type;
-
-        let totalMatchesCreated = 0;
-        let createdMatchesResult = [];
-
-        // Trois types différents 
-        switch (typeArbre) {
-            case "elimination": // Simple elimination 
-                const matchesToCreate = [];
-                let matchIndex = 1; 
-                for (let i = 0; i < randomTeams.length; i += 2) {
-                    const teamA = randomTeams[i];
-                    const teamB = randomTeams[i + 1]; 
-
-                    const newMatch = {
-                        tournament: tournamentId,
-                        round: 1,                 
-                        matchNumber: matchIndex   
-                    };
-
-                    if (teamB) {
-                        newMatch.teams = [teamA, teamB];
-                    } else {
-                        newMatch.teams = [teamA];
-                        newMatch.winner = teamA; 
-                    }
-                    matchesToCreate.push(newMatch);
-                    matchIndex++;
-                }
-                createdMatchesResult = await MatchesModel.insertMany(matchesToCreate);
-                totalMatchesCreated = createdMatchesResult.length;
-                break; // On utilise break au lieu de return pour pouvoir mettre à jour le statut ensuite
-
-            case "championnat": // Type championnat , ligue etc... 
-                const championnatMatches = [];
-                let champMatchIndex = 1;
-                for (let i = 0; i < randomTeams.length; i++) {
-                    for (let j = i + 1; j < randomTeams.length; j++) {
-                        const teamA = randomTeams[i];
-                        const teamB = randomTeams[j];
-
-                        championnatMatches.push({
-                            tournament: tournamentId,
-                            teams: [teamA, teamB],
-                            round: 1,
-                            matchNumber: champMatchIndex
-                        });
-                        champMatchIndex++;
-                    }
-                }
-                createdMatchesResult = await MatchesModel.insertMany(championnatMatches);
-                totalMatchesCreated = createdMatchesResult.length;
-                break;
-
-            case "suisse": // Round - Suisse. 
-                const swissMatches = [];
-                let swissMatchIndex = 1;
-                for (let i = 0; i < randomTeams.length; i += 2) {
-                    const teamA = randomTeams[i];
-                    const teamB = randomTeams[i + 1];
-
-                    const newMatch = {
-                        tournament: tournamentId,
-                        round: 1, 
-                        matchNumber: swissMatchIndex
-                    };
-
-                    if (teamB) {
-                        newMatch.teams = [teamA, teamB];
-                    } else {
-                        newMatch.teams = [teamA];
-                        newMatch.winner = teamA; 
-                    }
-                    swissMatches.push(newMatch);
-                    swissMatchIndex++;
-                }
-                createdMatchesResult = await MatchesModel.insertMany(swissMatches);
-                totalMatchesCreated = createdMatchesResult.length;
-                break;
-
-            default:
-                return res.status(400).json({ message: "Type d'arbre non reconnu : " + typeArbre });
-        }
-
-        // --- NOUVEAU : 2. Mise à jour du statut en base de données ---
-        // On effectue cette mise à jour SEULEMENT si la création des matchs a réussi (pas de catch)
-        await TournamentsModel.findByIdAndUpdate(tournamentId, {
-            $set: { statut: "en_cours" } // Assure-toi que cette string correspond à ce que tu attends
-        });
-
-        // 4. On renvoie la réponse de succès
-        return res.status(200).json({
-            message: `Tournoi au format ${typeArbre} généré et démarré avec succès !`,
-            statut: "en_cours",
-            totalMatchesCreated: totalMatchesCreated,
-            matches: createdMatchesResult 
-        });
-
+        const result = await tournamentService.startTournament(req.params.id);
+        return res.status(200).json(result);
     } catch (error) {
-        console.error(error);
+        if (error.status) return res.status(error.status).json({ message: error.message });
         return res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
 
-// Permet de générer le prochian round 
 module.exports.generateNextRound = async (req, res) => {
     try {
-        const tournamentId = req.params.id;
-
-        // On récupère TOUS les matchs du tournoi.
-        const allMatches = await MatchesModel.find({ tournament: tournamentId })
-                                           .sort({ round: -1, matchNumber: 1 });
-
-        if (!allMatches || allMatches.length === 0) {
-            return res.status(404).json({ message: "Aucun match trouvé pour ce tournoi. L'avez-vous démarré ?" });
-        }
-
-        // On isole les matchs du round ACTUEL 
-        const currentRoundNumber = allMatches[0].round;
-        const currentRoundMatches = allMatches.filter(m => m.round === currentRoundNumber);
-
-        // VÉRIFICATION : Est-ce que tous les matchs de ce round sont terminés ?
-        const unfinishedMatches = currentRoundMatches.filter(m => !m.winner);
-        if (unfinishedMatches.length > 0) {
-            return res.status(400).json({ 
-                message: `Impossible de générer le tour suivant : il reste ${unfinishedMatches.length} match(s) non terminé(s) au round ${currentRoundNumber}.` 
-            });
-        }
-
-        // On récupère les gagnants dans l'ordre de leurs matchs
-        const winners = currentRoundMatches.map(m => m.winner);
-
-        if (winners.length === 1) {
-            const finishedTournament = await TournamentsModel.findByIdAndUpdate(
-                tournamentId, 
-                { $set: { statut: "fini" } },
-                { new: true }
-            );
-
-            return res.status(200).json({ 
-                message: "Le tournoi est terminé !", 
-                champion: winners[0],
-                tournament: finishedTournament
-            });
-        }
-
-        // On génère les matchs du tour suivant
-        const nextRoundMatchesToCreate = [];
-        let matchIndex = 1;
-
-        for (let i = 0; i < winners.length; i += 2) {
-            const teamA = winners[i];
-            const teamB = winners[i + 1];
-
-            const newMatch = {
-                tournament: tournamentId,
-                round: currentRoundNumber + 1, 
-                matchNumber: matchIndex
-            };
-
-            if (teamB) {
-                
-                newMatch.teams = [teamA, teamB];
-            } else {
-                
-                newMatch.teams = [teamA];
-                newMatch.winner = teamA; 
-            }
-
-            nextRoundMatchesToCreate.push(newMatch);
-            matchIndex++;
-        }
-
-        // On sauvegarde le nouveau tour en base de données
-        const createdMatches = await MatchesModel.insertMany(nextRoundMatchesToCreate);
-
-        return res.status(200).json({
-            message: `Round ${currentRoundNumber + 1} généré avec succès !`,
-            matches: createdMatches
-        });
-
+        const result = await tournamentService.generateNextRound(req.params.id);
+        return res.status(200).json(result);
     } catch (error) {
-        console.error(error);
+        if (error.status) return res.status(error.status).json({ message: error.message });
         return res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
 
-module.exports.cancelTournament = async (req,res) => {
-    const idTournament = req.params.id;
-    // On cherche le tournoi, pas les matchs
-    const tournament = await TournamentsModel.findById(idTournament);
-
-    if(!tournament){
-        return res.status(404).json({ message: "Tournoi introuvable."});
-    }
-
-    // On supprime tous les matchs associés
-    const deletedMatches = await MatchesModel.deleteMany({ tournament: idTournament });
-
-    // On remet le statut du tournoi à "en_attente"
-    tournament.statut = 'en_attente';
-    await tournament.save();
-
-    return res.status(200).json({
-        message: "Le tournoi a été réinitialisé avec succès. Tous les matchs ont été supprimés.",
-        deletedCount: deletedMatches.deletedCount,
-        tournament // On renvoie le tournoi mis à jour
-    });
-};
-
-// Les controllers Patch 
-
-module.exports.changeStatutTournament = async (req,res) => {
-
-};
-
-
-
-// Les controllers Delete 
-module.exports.deleteTournament = async(req,res) =>{
+module.exports.cancelTournament = async (req, res) => {
     try {
+        const result = await tournamentService.cancelTournament(req.params.id);
+        return res.status(200).json({
+            message: "Le tournoi a été réinitialisé avec succès. Tous les matchs ont été supprimés.",
+            deletedCount: result.deletedCount,
+            tournament: result.tournament
+        });
+    } catch (error) {
+        if (error.status) return res.status(error.status).json({ message: error.message });
+        return res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
 
-        // 1. Initialisation des variables
-        const tournamentId = req.params.id;
-        
-        const deleteTournament = await TournamentsModel.findByIdAndDelete(tournamentId);
+// --- Contrôleurs PATCH ---
 
-        if (!deleteTournament) {
-            return res.status(404).json({ message: "Ce tournoi est introuvable ." });
-        }
+module.exports.changeStatutTournament = async (req, res) => {
+    // Logique à implémenter
+};
 
-        // 2. LE NETTOYAGE : On supprime TOUS les matchs liés à ce tournoi
-        const deletedMatches = await MatchesModel.deleteMany({ tournament: tournamentId });
+// --- Contrôleurs DELETE ---
 
-        // 3. On n'oublie pas de renvoyer une réponse de succès !
+module.exports.deleteTournament = async (req, res) => {
+    try {
+        const result = await tournamentService.deleteTournament(req.params.id);
         return res.status(200).json({ 
             message: "Le tournoi a été supprimé avec succès.",
-            matchesDeleted: deletedMatches.deletedCount
+            matchesDeleted: result.matchesDeleted
         });
-
     } catch (error) {
-        console.error(error);
+        if (error.status) return res.status(error.status).json({ message: error.message });
         return res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
 
-module.exports.deleteAllTeamInTournament = async(req,res) => {
+module.exports.deleteAllTeamInTournament = async (req, res) => {
     try {
-        const tournamentId = req.params.id;
-
-        // 1. Récupérer le tournoi pour avoir la liste des équipes
-        const tournament = await TournamentsModel.findById(tournamentId);
-
-        if (!tournament) {
-            return res.status(404).json({ message: "Tournoi introuvable." });
-        }
-
-        if (!tournament.list_teams || tournament.list_teams.length === 0) {
-            return res.status(400).json({ message: "Il n'y a aucune équipe à supprimer dans ce tournoi." });
-        }
-
-        // 2. On boucle sur toutes les équipes et on exécute notre service
-        // Promise.all permet d'exécuter toutes les suppressions en parallèle
-        const deletePromises = tournament.list_teams.map(teamId => deleteTeamLogic(teamId));
-        await Promise.all(deletePromises);
-
+        await tournamentService.deleteAllTeamInTournament(req.params.id);
         return res.status(200).json({ 
             message: "Toutes les équipes du tournoi ont été supprimées avec succès (ainsi que leurs joueurs)." 
         });
     } catch (error) {
-        console.error(error);
+        if (error.status) return res.status(error.status).json({ message: error.message });
         return res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
-
-// Les controleurs PUT
-
-// module.exports.replaceAll = async(req,res) =>{
-//     try {
-        
-//     } catch (error) {
-//         console.error(error);
-//         return res.status(500).json({ message: "Erreur serveur", error: error.message });    
-//     }
-// };
-
-// module.exports.validateListFinaleTournament = async(req,res) =>{
-//     try {
-        
-//     } catch (error) {
-//         console.error(error);
-//         return res.status(500).json({ message: "Erreur serveur", error: error.message });         
-//     }
-// };

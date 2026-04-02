@@ -67,20 +67,35 @@ const setAuthLogic = async (pseudo,mail,mdp,birthday) => {
 };
 
 
-const changePasswordLogic = async(idAuth,newMdp) => {
+// Dans services/auth.service.js
 
-    if(!account){
-        return null;
+const updateAuthLogic = async (idAuth, donneesRecues) => {
+    const account = await AccountModel.findById(idAuth);
+    if (!account) throw new Error("Compte introuvable");
+
+    // 1. La "Whitelist" : Les champs qu'on AUTORISE à modifier
+    const champsAutorises = ['pseudo', 'mail', 'birthday', 'mdp'];
+    const donneesFiltrees = {};
+
+    // 2. On boucle sur ce qu'on a reçu et on garde que ce qui est autorisé
+    for (const cle in donneesRecues) {
+        if (champsAutorises.includes(cle)) {
+            donneesFiltrees[cle] = donneesRecues[cle];
+        }
     }
-    const hashedNewMdp = await hashPassword(newMdp);
 
+    // 3. Le Cas Spécial : Si le mot de passe fait partie des modifications !
+    if (donneesFiltrees.mdp) {
+        donneesFiltrees.mdp = await hashPassword(donneesFiltrees.mdp);
+    }
+
+    // 4. On met à jour avec $set (qui ne modifie que les champs précisés)
     const updateAccount = await AccountModel.findByIdAndUpdate(
         idAuth,
-        { mdp: hashedNewMdp },
-        {new : true}   
-    )
+        { $set: donneesFiltrees },
+        { new: true, runValidators: true } // runValidators vérifie que le mail est bien formaté par ex.
+    );
     
-    
-    return updateAccount
+    return updateAccount;
 }
-module.exports = {connectAuthLogic,setAuthLogic,changePasswordLogic}
+module.exports = {connectAuthLogic,setAuthLogic,updateAuthLogic}
