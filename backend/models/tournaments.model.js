@@ -9,7 +9,12 @@ const tournamentSchema = mongoose.Schema(
         list_teams: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Teams' }],
         account: { type: mongoose.Schema.Types.ObjectId, ref: 'Auth', required: true },
         classement: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Teams' }],
-        statut : {type: String ,default: "en attente", required: true}
+        statut: {
+            type: String,
+            enum: ['en_attente', 'en_cours', 'fini'], // Restreint les valeurs
+            default: 'en_attente',
+            required: true
+        }
     },
     {
         timestamps: true,

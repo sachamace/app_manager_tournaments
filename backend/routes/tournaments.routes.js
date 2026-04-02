@@ -7,8 +7,8 @@ const { getTournaments, getTournament, getBracket, getTeamsRegister, getRanking,
 const { checkAuth } = require('../middleware/auth.middleware'); 
 // GET
 router.get("/",getTournaments);
-router.get("/:id",getTournament);
 router.get("/account/:accountId", getTournamentByAccount);
+router.get("/:id",getTournament);
 router.get("/:id/bracket",getBracket);
 router.get("/:id/participants",getTeamsRegister);
 router.get("/:id/standings",getRanking);

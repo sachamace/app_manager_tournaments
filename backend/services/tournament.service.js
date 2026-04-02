@@ -96,10 +96,7 @@ const getBracket = async (id) => {
 
 const getTeamsRegister = async (id) => {
     const tournament = await TournamentsModel.findById(id).populate({
-        path: 'list_teams',
-        populate: {
-            path: 'players'
-        }
+        path: 'list_teams', populate: { path: 'players' }
     });
     if (!tournament) throw new AppError("Tournoi introuvable", 404);
     return tournament.list_teams;

@@ -43,12 +43,12 @@ module.exports.addTournament = asyncHandler(async (req, res) => {
         account: req.user.id 
     };
     const tournament = await tournamentService.addTournament(data);
-    res.status(201).json(tournament);
+    res.status(200).json(tournament);
 });
 
 module.exports.addTeamsAtTournament = asyncHandler(async (req, res) => {
-    const updateTournament = await tournamentService.addTeamsAtTournament(req.params.id, req.body);
-    return res.status(201).json({
+    const updateTournament = await tournamentService.addTeamsAtTournament(req.params.id, req.body.teamId);
+    return res.status(200).json({
         message: "Teams ajouté dans le tournoi avec succès !",
         data: updateTournament
     });
@@ -56,12 +56,12 @@ module.exports.addTeamsAtTournament = asyncHandler(async (req, res) => {
 
 module.exports.startTournament = asyncHandler(async (req, res) => {
     const result = await tournamentService.startTournament(req.params.id);
-    return res.status(201).json(result);
+    return res.status(200).json(result);
 });
 
 module.exports.generateNextRound = asyncHandler(async (req, res) => {
     const result = await tournamentService.generateNextRound(req.params.id);
-    return res.status(201).json(result);
+    return res.status(200).json(result);
 });
 
 module.exports.cancelTournament = asyncHandler(async (req, res) => {
