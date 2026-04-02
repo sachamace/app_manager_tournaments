@@ -6,6 +6,9 @@ export const fetchAllAuth = async () => {
     try {
         const response = await fetch(`${API_URL}/auth`);
         const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || "Tout les comptes sont introuvable");
+        }
         return data; 
     } catch (error) {
         console.error("Erreur lors de la récupération des tournois:", error);
@@ -43,6 +46,9 @@ export const setAuth = async (pseudo,mail,mdp,birthday) => {
         });
 
         const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || "Ajout d'un compte a eu une erreur.");
+        }
         return data; 
         
     } catch (error) {

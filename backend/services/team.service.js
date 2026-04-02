@@ -121,6 +121,27 @@ const addCaptainInTeamLogic = async (teamId, playerId) => {
 
     return updatedTeam;
 };
+const updateTeamLogic = async (teamId, updateData) => {
+    if (!updateData || Object.keys(updateData).length === 0) {
+        throw new AppError("Veuillez fournir les informations à mettre à jour", 400);
+    }
+    
+    const updatedTeam = await TeamsModel.findByIdAndUpdate(
+        teamId,
+        { $set: updateData }, 
+        { 
+            new: true,           
+            runValidators: true  
+        }
+    );
+
+
+    if (!updatedTeam) {
+        throw new AppError("Cette équipe est introuvable et n'a pas pu être mise à jour.", 404);
+    }
+
+    return updatedTeam;
+};
 
 module.exports = { 
     getTeamsLogic,
@@ -131,5 +152,6 @@ module.exports = {
     addPlayerInTeamLogic,
     deleteTeamLogic,
     createTeamLogic,
-    addCaptainInTeamLogic
+    addCaptainInTeamLogic,
+    updateTeamLogic
 };

@@ -5,6 +5,9 @@ export const fetchAllMatches = async () => {
     try {
         const response = await fetch(`${API_URL}/matches`);
         const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || "Tout les matchs sont introuvable");
+        }
         return data; 
     } catch (error) {
         console.error("Erreur lors de la récupération des tournois:", error);
@@ -42,6 +45,9 @@ export const updateMatchScore = async (matchId, newScores) => {
         });
 
         const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || "Erreur lors de la mise à jour du score");
+        }
         return data; 
         
     } catch (error) {

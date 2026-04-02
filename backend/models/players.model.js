@@ -9,9 +9,10 @@ const playerSchema = mongoose.Schema(
         team: {
             type: [{
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Teams' 
+                ref: 'Teams',
+                default: null
             }],
-            validate: [(val) => val.length <= 1, 'Un joueur ne peut avoir que une équipe maximum']
+            validate: [(val) => !val || val.length <= 1, 'Un joueur ne peut avoir que une équipe maximum']
         }
     },
     {

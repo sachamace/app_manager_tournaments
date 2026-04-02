@@ -8,7 +8,8 @@ const {
     addPlayerInTeamLogic,
     deleteTeamLogic, 
     createTeamLogic, 
-    addCaptainInTeamLogic
+    addCaptainInTeamLogic,
+    updateTeamLogic
 } = require('../services/team.service');
 
 // Les controllers GET 
@@ -63,7 +64,9 @@ module.exports.createTeam = asyncHandler(async(req,res) => {
 
 module.exports.addPlayerInTeam = asyncHandler(async (req, res) => {
     const teamId = req.params.id;
-    const elementIdToAdd = req.body;
+    const elementIdToAdd = req.body.playerId;
+
+    // On appelle notre service neutre
     const updatedTeam = await addPlayerInTeamLogic(teamId, elementIdToAdd);
 
     if (!updatedTeam) {
@@ -79,7 +82,9 @@ module.exports.addPlayerInTeam = asyncHandler(async (req, res) => {
 
 module.exports.addCaptainInTeam = asyncHandler(async(req,res) => {
     const userId = req.params.id
-    const elementIdToAdd = req.body
+    const elementIdToAdd = req.body.playerId;
+
+    // On appelle notre service neutre
 
     const updatedTeam = await addCaptainInTeamLogic(userId,elementIdToAdd);
 
@@ -93,7 +98,7 @@ module.exports.addCaptainInTeam = asyncHandler(async(req,res) => {
 // Patch 
 module.exports.updateTeam = asyncHandler(async (req, res) => {
     const teamId = req.params.id;
-    const updateData = (req.body && Object.keys(req.body).length > 0) ? req.body : req.query;
+    const updateData = req.body;
 
     const updatedTeam = await updateTeamLogic(teamId, updateData);
 

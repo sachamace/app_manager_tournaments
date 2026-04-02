@@ -19,7 +19,7 @@ module.exports.getMatch = asyncHandler(async (req, res) => {
 
 exports.updateScore = asyncHandler(async (req, res) => {
     const matchId = req.params.id;
-    const scores = req.body; 
+    const scores = req.body.scores; 
 
     const matchUpdated = await updateMatchScoreLogic(matchId, scores);
 

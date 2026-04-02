@@ -39,9 +39,6 @@ export default function TournamentDetail() {
             return;
         }
         try {
-
-
-
             await deleteTournament(id);
             // Le message ne sera pas visible car la redirection est immédiate,
             // mais on peut le laisser si vous implémentez un système de notifications globales (toasts).
@@ -126,7 +123,7 @@ export default function TournamentDetail() {
             const tournamentData = await getTournamentById(id); 
             setTournament(tournamentData);
 
-            if (tournamentData?.statut === 'en attente') {
+            if (tournamentData?.statut === 'en_attente') {
                 setIsRoundFinished(false);
                 setIsTournamentFinished(false);
                 const teams = await getTeamsRegister(id);
@@ -169,7 +166,7 @@ export default function TournamentDetail() {
                 <p style={{color: 'var(--text-muted)'}}>Format : {tournament.tree_type}</p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {tournament.statut === 'en attente' && (
+                {tournament.statut === 'en_attente' && (
                     <ButtonYes onClick={handleStartTournament}>Commencer le tournoi</ButtonYes>
                 )}
                 {isRoundFinished && tournament.statut === 'en_cours' && (
@@ -186,7 +183,7 @@ export default function TournamentDetail() {
                 {message.content}
             </div>
         )}
-        {tournament.statut === "en attente" ? (
+        {tournament.statut === "en_attente" ? (
             // Afficher l'ajout d'équipe 
             <div className="detail-main-card">
             {participants.length === 0 ? (

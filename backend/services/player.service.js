@@ -19,14 +19,14 @@ const getPlayerById = async (id) => {
 // --- SERVICES POST ---
 
 const createPlayer = async (data) => {
-    // 400 = Mauvaise requête (champ manquant)
     if (!data.pseudo) {
         throw new AppError("Veuillez fournir un pseudo pour le joueur.", 400);
     }
 
     return await PlayersModel.create({
         pseudo: data.pseudo,
-        team: data.team || null // Assure-toi que team soit null si non fourni
+        pseudo: data.pseudo,
+        team: data.team ? [data.team] : [] 
     });
 };
 

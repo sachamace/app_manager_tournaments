@@ -15,11 +15,22 @@ export const fetchAllTournaments = async () => {
 
 
 export const fetchMyTournaments = async (accountId) => {
-    const response = await fetch(`${API_URL}/tournaments/account/${accountId}`);
-    const data = await response.json();
-    return data;
+    try {
+        const response = await fetch(`${API_URL}/tournaments/account/${accountId}`, {
+            headers: getAuthHeaders() 
+        });
+        
+        if (!response.ok) {
+            throw new Error("Erreur lors de la récupération de vos tournois");
+        }
+        
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Erreur:", error);
+        return []; 
+    }
 };
-
 export const getTournamentById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/tournaments/${id}`);
@@ -112,7 +123,7 @@ export const addTeamsAtTournament = async (tournamentid,teamID) => {
             method: 'POST', 
             headers: getAuthHeaders(),
 
-            body: JSON.stringify(teamID),
+            body: JSON.stringify({ teamId: teamID }),
         });
 
 
