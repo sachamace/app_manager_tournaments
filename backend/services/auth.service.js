@@ -75,7 +75,7 @@ const updateAuthLogic = async (idAuth, donneesRecues) => {
     if (!account) throw new AppError("Compte introuvable", 404);
 
     // 1. La "Whitelist" : Les champs qu'on AUTORISE à modifier
-    const champsAutorises = ['pseudo', 'mail', 'birthday', 'mdp'];
+    const champsAutorises = ['pseudo', 'mail', 'mdp'];
     const donneesFiltrees = {};
 
     // 2. On boucle sur ce qu'on a reçu et on garde que ce qui est autorisé

@@ -18,9 +18,6 @@ const accountSchema = mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Tournaments' 
         }],
-        birthday: {
-            type: Date
-        }
     },
     {
         timestamps: true,
