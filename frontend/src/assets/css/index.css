@@ -17,6 +17,7 @@
   --color-border: #E2E8F0;        /* Bordures légères des inputs */
   
   --color-success: #10B981;       /* Vert Menthe - Victoires, validation */
+  --color-error: #DC2626;         /* Rouge - Erreurs */
   --color-accent: #F59E0B;        /* Jaune Soleil - En attente, alertes douces */
 
   /* Typographie */
@@ -81,8 +82,18 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
   padding: var(--spacing-lg);
-  border: 1px solid rgba(0, 0, 0, 0.02); /* Optionnel : très légère bordure pour lier l'ombre */
+  border: 1px solid rgba(0, 0, 0, 0.02);
   margin-bottom: var(--spacing-md);
+}
+
+/* Ajout : Cartes cliquables (pour la liste de tournois) */
+.card-interactive {
+  transition: border-color 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+.card-interactive:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
 }
 
 /* Boutons */
@@ -94,20 +105,30 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
   font-size: 15px;
   padding: 10px 20px;
-  border-radius: var(--radius-md); /* Remplace par var(--radius-pill) pour un effet bouton rond */
+  border-radius: var(--radius-md);
   border: none;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  text-decoration: none; /* Utile si on utilise un <Link className="btn"> */
 }
 
 .btn-primary {
   background-color: var(--color-primary);
   color: white;
 }
-
 .btn-primary:hover {
-  background-color: #1d4ed8; /* Un bleu très légèrement plus foncé au survol */
+  background-color: #1d4ed8;
   transform: translateY(-1px);
+}
+
+/* Ajout : Bouton secondaire (ex: Annuler) */
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-text-muted);
+}
+.btn-secondary:hover {
+  background-color: var(--color-border);
+  color: var(--color-text-main);
 }
 
 /* Champs de texte (Inputs) */
@@ -136,23 +157,65 @@ h1, h2, h3, h4, h5, h6 {
 .input-field:focus {
   outline: none;
   border-color: var(--color-primary);
-  /* Léger halo bleu au focus pour l'accessibilité */
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); 
 }
+
+/* Ajout : Badges (Statuts, En attente, Gagnant) */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-body);
+}
+
+.badge-success {
+  background-color: rgba(16, 185, 129, 0.1); 
+  color: var(--color-success); 
+}
+
+.badge-accent {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: var(--color-accent);
+}
+
+/* Ajout : Alertes (Messages d'erreur ou de succès) */
+.alert {
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+.alert-error {
+  background-color: #FEF2F2;
+  color: var(--color-error);
+  border: 1px solid #FCA5A5;
+}
+
+.alert-success {
+  background-color: #ECFDF5;
+  color: var(--color-success);
+  border: 1px solid #6EE7B7;
+}
+
+/* --- 5. LAYOUTS (Agencement des pages) --- */
 
 /* Le conteneur principal qui prend tout l'écran */
 .app-layout {
   display: flex;
-  height: 100vh; /* Prend 100% de la hauteur de l'écran */
+  height: 100vh;
   width: 100vw;
-  overflow: hidden; /* Empêche le scroll sur toute la page */
+  overflow: hidden;
   background-color: var(--color-background);
 }
 
 /* La barre latérale à gauche */
 .sidebar {
-  width: 250px; /* Largeur fixe */
-  background-color: var(--color-surface); /* Blanc */
+  width: 250px;
+  background-color: var(--color-surface);
   border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
@@ -161,25 +224,40 @@ h1, h2, h3, h4, h5, h6 {
 
 /* La partie droite qui contient le header et la page */
 .main-wrapper {
-  flex: 1; /* Prend tout l'espace restant à droite */
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
 
 /* L'en-tête en haut */
 .top-header {
-  height: 64px; /* Hauteur fixe */
-  background-color: var(--color-surface); /* Blanc */
+  height: 64px;
+  background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   padding: 0 var(--spacing-lg);
-  justify-content: space-between; /* Écarte les éléments (ex: titre à gauche, profil à droite) */
+  justify-content: space-between;
 }
 
 /* La zone où tes pages vont s'afficher */
 .page-content {
-  flex: 1; /* Prend tout l'espace restant sous le header */
+  flex: 1;
   padding: var(--spacing-lg);
-  overflow-y: auto; /* Permet de scroller UNIQUEMENT le contenu de la page, pas le menu */
+  overflow-y: auto;
+}
+
+/* Pages d'authentification (Login / Register) */
+.auth-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--color-background);
+  padding: var(--spacing-md);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 450px;
 }
