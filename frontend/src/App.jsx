@@ -18,8 +18,8 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
-          <Route path="create-tournament" element={<CreateTournament />} />
-          <Route path="tournaments" element={<Tournament />} />
+          <Route path="tournaments/create" element={<CreateTournament />} />
+          <Route path="tournament/:id" element={<Tournament />} />
           <Route path="account" element={<Account />} />
           <Route path="*" element={<Navigate to="/" />} />  
         </Route>

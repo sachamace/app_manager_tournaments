@@ -183,11 +183,8 @@ export default function Home() {
                     <div className="card" style={{ marginBottom: 0 }}>
                         <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>Actions rapides</h2>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                            <Link to="/tournaments" className="btn btn-primary" style={{ justifyContent: 'center', width: '100%' }}>
+                            <Link to="/tournaments/create" className="btn btn-primary" >
                                 + Créer un tournoi
-                            </Link>
-                            <Link to="/teams" className="btn btn-secondary" style={{ justifyContent: 'center', width: '100%', border: '1px solid var(--color-border)' }}>
-                                Gérer les équipes
                             </Link>
                         </div>
                     </div>

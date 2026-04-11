@@ -232,8 +232,13 @@ export default function Account() {
                             </div>
                         )}
                     </div>
-                </div>
 
+                </div>
+                <div >
+                        <Link to="/" className="btn btn-secondary" style={{ textDecoration: 'none' }}onClick={logout}>
+                            Déconnexion
+                        </Link>
+                    </div>
             </div>
         </div>
     );

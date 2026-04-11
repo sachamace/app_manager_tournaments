@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate , Link} from 'react-router-dom';
+import { useState, useContext } from 'react';
+import { setAuth } from '../services/auth';
 import '../assets/css/index.css';// Importe ton CSS global
 
 export default function Register()  {
@@ -14,7 +15,6 @@ export default function Register()  {
     try {
       await setAuth(pseudo, mail, mdp, birthday);
       alert('Compte créé avec succès !');
-      navigate('/login');
     } catch (error) {
       alert('Erreur : Création de compte incorrect !');
     }

@@ -10,19 +10,22 @@ export default function Header() {
     const [isLightMode, setIsLightMode] = useState(() => {
         return localStorage.getItem('theme') === 'light';
     });
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        return localStorage.getItem('theme') === 'dark';
+    });
 
     useEffect(() => {
-        if (isLightMode) {
-            document.body.classList.add('light-mode'); 
-            localStorage.setItem('theme', 'light');    
+        if (isDarkMode) {
+            document.body.classList.add('dark-mode'); 
+            localStorage.setItem('theme', 'dark');    
         } else {
-            document.body.classList.remove('light-mode'); 
-            localStorage.setItem('theme', 'dark');        
+            document.body.classList.remove('dark-mode'); 
+            localStorage.setItem('theme', 'light');        
         }
-    }, [isLightMode]);
+    }, [isDarkMode]);
 
     const toggleTheme = () => {
-        setIsLightMode(!isLightMode); 
+        setIsDarkMode(!isDarkMode); 
     };
 
     return (
@@ -36,23 +39,23 @@ export default function Header() {
             
             {/* Navigation */}
             <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px', flexGrow: 1 }}>
-                <Link to="/" className="btn">Accueil</Link>
+                <Link to="/" className="btn btn-primary">Accueil</Link>
                 {user?(
                     <>
-                        <Link to="/tournaments" className="btn">Mes Tournois</Link>
+                        <Link to="/tournaments" className="btn btn-gray">Mes Tournois</Link>
                     </>
                 ) : (
                     <>
-                        <Link to="/login" className="btn">Se connecter</Link>
+                        <Link to="/login" className="btn btn-accent">Se connecter</Link>
                     </>
                 )}
             </nav>
 
             {user ? (
-                <Link to="/create-tournament" className="btn-primary">Créer un tournoi</Link>
+                <Link to="/create-tournament" className="btn btn-primary">Créer un tournoi</Link>
             ):(
                 <>
-                    <Link to="/login" className="btn">Se connecter</Link>
+                    <Link to="/login" className="btn btn-primary">Se connecter</Link>
                 </>
             )}
 
@@ -66,30 +69,24 @@ export default function Header() {
             <header className="top-header">
             <button 
                 onClick={toggleTheme} 
-                style={{
-                    background: 'none',
-                    border: 'none',
-                    fontSize: '1.5rem',
-                    cursor: 'pointer',
-                    marginRight: '15px',
-                }}
-                title={isLightMode ? "Passer en mode sombre" : "Passer en mode clair"}
+                style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', marginRight: '15px' }}
+                title={isDarkMode ? "Passer en mode clair" : "Passer en mode sombre"}
             >
-                {isLightMode ? '🌙' : '☀️'}
+                {isDarkMode ? '☀️' : '🌙'}
             </button>
             {user ? (
                 // Coté connecté 
                 <>
                     <div className="user-profile">
-                        <Link to="/account" className='btn-primary'>Mon Profil</Link>
+                        <Link to="/account" className='btn btn-primary'>Mon Profil</Link>
                     </div>
                 </>
             ):(
                 // Coté non connecté
                 <>
                     <div>
-                        <Link to="/login" className='btn'>Se connecter</Link>
-                        <Link to="/register" className='btn-primary'>S'inscrire</Link>
+                        <Link to="/login" className='btn btn-primary'>Se connecter</Link>
+                        <Link to="/register" className='btn btn-primary'>S'inscrire</Link>
                     </div>
 
                 </>

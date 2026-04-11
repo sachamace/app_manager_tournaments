@@ -5,9 +5,9 @@ import { addTournament } from '../services/tournaments';
 import '../assets/css/index.css';
 
 export default function CreateTournament() {
-
+    
     const navigate = useNavigate();
-
+    const { user } = useContext(AuthContext);
     const [games, setGames] = useState('');
     const [tree_type, setTreeType] = useState('elimination');
     const [cashprize, setCashprize] = useState('');
@@ -39,7 +39,7 @@ export default function CreateTournament() {
             
             // Rediriger vers la page du nouveau tournoi après un court délai
             setTimeout(() => {
-                navigate(`/tournaments/${newTournament._id}`);
+                navigate(`/tournament/${newTournament._id}`);
             }, 1500);
 
         } catch (error) {
@@ -88,7 +88,7 @@ export default function CreateTournament() {
 
             {/* --- CARTE DU FORMULAIRE --- */}
             <div className="card">
-                <form>
+                <form onSubmit={handleSubmit}>
                     {/* Grille adaptative (1 colonne sur mobile, 2 colonnes sur PC) */}
                     <div style={{ 
                         display: 'grid', 
@@ -130,7 +130,7 @@ export default function CreateTournament() {
                             <input
                                 type="text"
                                 id="cashprize"
-                                className="form-input"
+                                className="input-field" 
                                 value={cashprize}
                                 onChange={(e) => setCashprize(e.target.value)}
                                 placeholder="Ex: 1000€, Lots, etc."
@@ -162,9 +162,9 @@ export default function CreateTournament() {
                                 required
                             >
                                 <option value="" disabled>Sélectionnez un format</option>
-                                <option value="single_elimination">Élimination directe</option>
-                                <option value="double_elimination">Double élimination</option>
-                                <option value="championship">Championnat (Poules)</option>
+                                <option value="elimination">Élimination directe</option>
+                                <option value="suisse">Système Suisse</option>
+                                <option value="championnat">Championnat (Poules)</option>
                             </select>
                         </div>
                     </div>

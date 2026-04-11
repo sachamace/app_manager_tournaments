@@ -51,7 +51,23 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+/* --- VARIABLES MODE SOMBRE --- */
+body.dark-mode {
+  --color-background: #0F172A;    /* Fond très foncé */
+  --color-surface: #1E293B;       /* Cartes foncées */
+  --color-text-main: #F8FAFC;     /* Texte blanc cassé */
+  --color-text-muted: #94A3B8;    /* Texte secondaire gris */
+  --color-border: #334155;        /* Bordures sombres */
+  
+  /* On assombrit légèrement les badges/alertes pour que ça ne pique pas les yeux */
+  --color-success: #34D399;
+  --color-error: #F87171;
+  --color-accent: #FBBF24;
+}
 
+/* Optionnel : Correction pour les alertes en mode sombre */
+body.dark-mode .alert-error { background-color: rgba(220, 38, 38, 0.1); border-color: #DC2626; }
+body.dark-mode .alert-success { background-color: rgba(16, 185, 129, 0.1); border-color: #10B981; }
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: 600; /* Semi-bold */
@@ -174,7 +190,10 @@ h1, h2, h3, h4, h5, h6 {
   background-color: rgba(16, 185, 129, 0.1); 
   color: var(--color-success); 
 }
-
+.badge-gray {
+  background-color: rgba(196, 202, 212, 0.1); 
+  color: var(--color-text-muted); 
+}
 .badge-accent {
   background-color: rgba(245, 158, 11, 0.1);
   color: var(--color-accent);
@@ -252,7 +271,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  min-height: 85vh;
   background-color: var(--color-background);
   padding: var(--spacing-md);
 }

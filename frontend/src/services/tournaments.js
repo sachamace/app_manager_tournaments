@@ -108,6 +108,9 @@ export const addTournament = async (tournamentData) => {
         });
 
         const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || "Erreur lors de la création du tournoi");
+        }
         return data; 
         
     } catch (error) {
@@ -128,6 +131,9 @@ export const addTeamsAtTournament = async (tournamentid,teamID) => {
 
 
         const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || "Erreur lors de l'ajout d'une team dans le tournoi");
+        }
         return data; 
         
     } catch (error) {
