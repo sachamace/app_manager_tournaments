@@ -3,12 +3,8 @@ const {
     getTeamsLogic,
     getTeamLogic,
     getHistoricalMatchesLogic,
-    getCaptainTeamLogic,
-    getPlayerInTeamLogic,
-    addPlayerInTeamLogic,
     deleteTeamLogic, 
     createTeamLogic, 
-    addCaptainInTeamLogic,
     updateTeamLogic
 } = require('../services/team.service');
 
@@ -35,21 +31,6 @@ module.exports.getHistoricalMatches = asyncHandler(async (req, res) => {
     res.status(200).json(matches); 
 });
 
-module.exports.getCaptainTeam = asyncHandler(async (req, res) => {
-    const captain = await getCaptainTeamLogic(req.params.id);
-    if (!captain) {
-        return res.status(404).json({ message: "Équipe ou capitaine non trouvé" });
-    }
-    res.status(200).json(captain); 
-});
-
-module.exports.getPlayerInTeam = asyncHandler(async (req, res) => {
-    const players = await getPlayerInTeamLogic(req.params.id);
-    if (!players) {
-        return res.status(404).json({ message: "Équipe ou joueurs non trouvés" });
-    }
-    res.status(200).json(players); 
-});
 
 
 // Les controllers Set 
@@ -62,37 +43,6 @@ module.exports.createTeam = asyncHandler(async(req,res) => {
     res.status(201).json(team);
 });
 
-module.exports.addPlayerInTeam = asyncHandler(async (req, res) => {
-    const teamId = req.params.id;
-    const elementIdToAdd = req.body.playerId;
-
-    // On appelle notre service neutre
-    const updatedTeam = await addPlayerInTeamLogic(teamId, elementIdToAdd);
-
-    if (!updatedTeam) {
-        return res.status(404).json({ message: "La team est introuvable." });
-    }
-
-    return res.status(200).json({
-        message: "Joueur ajouté dans la team avec succès !",
-        data: updatedTeam 
-    });
-
-});
-
-module.exports.addCaptainInTeam = asyncHandler(async(req,res) => {
-    const userId = req.params.id
-    const elementIdToAdd = req.body.playerId;
-
-    // On appelle notre service neutre
-
-    const updatedTeam = await addCaptainInTeamLogic(userId,elementIdToAdd);
-
-    return res.status(200).json({
-        message: "Un capitaine est ajouté dans la team avec succès !",
-        data: updatedTeam 
-    });
-});
 
 
 // Patch 

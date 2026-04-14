@@ -98,45 +98,7 @@ export const createTeam = async (teamsData) => {
         throw error; 
     }
 };
-
-export const addPlayerInTeam = async (teamId, playerId) => {
-    try {
-
-        const response = await fetch(`${API_URL}/teams/players/${teamId}`, {
-            method: 'POST', 
-            headers: getAuthHeaders(),
-
-            body: JSON.stringify({ playerId: playerId }),
-        });
-
-        if (!response.ok) throw new Error("Erreur lors de l'ajout du joueur");
-        return await response.json();
-        
-    } catch (error) {
-        console.error("Erreur lors de la création de la team:", error);
-        throw error; 
-    }
-};
-
-export const addCaptainInTeam = async (id) => {
-    try {
-
-        const response = await fetch(`${API_URL}/teams/captain/${teamId}`, {
-            method: 'POST', 
-            headers: getAuthHeaders(),
-
-            body: JSON.stringify({ playerId: playerId }),
-        });
-
-        if (!response.ok) throw new Error("Erreur lors de l'ajout du capitaine");
-        return await response.json();       
-        
-    } catch (error) {
-        console.error("Erreur lors de la création de la team:", error);
-        throw error; 
-    }
-};
-
+ 
 
 // PATCH
 export const updateTeam = async (id, teamData) => {

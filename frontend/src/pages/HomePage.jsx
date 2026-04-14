@@ -138,7 +138,7 @@ export default function Home() {
                         {recentTournaments.length > 0 ? (
                             recentTournaments.map(tournament => (
                                 <Link 
-                                    to={`/tournaments/${tournament._id}`} 
+                                    to={`/tournament/${tournament._id}`} 
                                     key={tournament._id} 
                                     className="card-interactive"
                                     style={{ 
@@ -183,7 +183,7 @@ export default function Home() {
                     <div className="card" style={{ marginBottom: 0 }}>
                         <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>Actions rapides</h2>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                            <Link to="/tournaments/create" className="btn btn-primary" >
+                            <Link to="/tournament/create" className="btn btn-primary" >
                                 + Créer un tournoi
                             </Link>
                         </div>

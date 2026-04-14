@@ -42,17 +42,17 @@ export default function Header() {
                 <Link to="/" className="btn btn-primary">Accueil</Link>
                 {user?(
                     <>
-                        <Link to="/tournaments" className="btn btn-gray">Mes Tournois</Link>
+                        <Link to="/tournaments" className="btn btn-primary">Mes Tournois</Link>
                     </>
                 ) : (
                     <>
-                        <Link to="/login" className="btn btn-accent">Se connecter</Link>
+                        <Link to="/login" className="btn btn-primary">Se connecter</Link>
                     </>
                 )}
             </nav>
 
             {user ? (
-                <Link to="/create-tournament" className="btn btn-primary">Créer un tournoi</Link>
+                <Link to="/tournament/create" className="btn btn-primary">Créer un tournoi</Link>
             ):(
                 <>
                     <Link to="/login" className="btn btn-primary">Se connecter</Link>

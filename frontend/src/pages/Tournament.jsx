@@ -194,7 +194,7 @@ export default function Tournament() {
                             <h2 style={{ fontSize: '1.2rem', margin: 0 }}>
                                 Équipes inscrites ({participants.length}/{tournament.maxTeams})
                             </h2>
-                            <Link to={`/tournaments/${id}/add-team`} className="btn btn-primary" style={{ padding: '6px 12px', fontSize: '13px' }}>
+                            <Link to={`/tournament/${id}/add-team`} className="btn btn-primary" style={{ padding: '6px 12px', fontSize: '13px' }}>
                                 + Ajouter
                             </Link>
                         </div>

@@ -9,13 +9,9 @@ const { checkAuth } = require('../middleware/auth.middleware');
 router.get("/",getTeams);
 router.get("/:id",getTeam);
 router.get("/matches/:id",getHistoricalMatches);
-router.get("/players/:id",getPlayerInTeam);
-router.get("/captain/:id",getCaptainTeam);
 
 // POST 
 router.post("/",checkAuth,createTeam);
-router.post("/players/id",checkAuth,addPlayerInTeam);
-router.post("/captain/:id",checkAuth,addCaptainInTeam);
 
 // PATCH
 router.patch("/:id",checkAuth, updateTeam);

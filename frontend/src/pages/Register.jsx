@@ -1,22 +1,35 @@
 import { useNavigate , Link} from 'react-router-dom';
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { setAuth } from '../services/auth';
-import '../assets/css/index.css';// Importe ton CSS global
+import '../assets/css/index.css';
 
 export default function Register()  {
 
+  // Déclaration de tous les états nécessaires
+  const [pseudo, setPseudo] = useState('');
   const [mail, setMail] = useState('');
   const [mdp, setMdp] = useState('');
-  const [pseudo, setPseudo] = useState('');
+  const [confirmMdp, setConfirmMdp] = useState(''); // Remplace formData.confirmPassword
+  const [error, setError] = useState(null); // Ajout de l'état pour les erreurs
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null); // Réinitialiser l'erreur avant une nouvelle tentative
+
+    // Petite vérification pour voir si les mots de passe correspondent
+    if (mdp !== confirmMdp) {
+        setError('Les mots de passe ne correspondent pas.');
+        return;
+    }
+
     try {
-      await setAuth(pseudo, mail, mdp, birthday);
+      await setAuth(pseudo, mail, mdp);
       alert('Compte créé avec succès !');
-    } catch (error) {
-      alert('Erreur : Création de compte incorrect !');
+      navigate('/login'); // Redirection vers la page de connexion après le succès
+    } catch (err) {
+      setError('Erreur : Création de compte incorrect !');
     }
   };
 
@@ -27,6 +40,7 @@ export default function Register()  {
           S'inscrire
         </h1>
 
+        {/* Affichage conditionnel de l'erreur */}
         {error && (
           <div style={{
             padding: 'var(--spacing-md)',
@@ -91,8 +105,9 @@ export default function Register()  {
                 id="confirmPassword"
                 className="input-field" 
                 placeholder="••••••••" 
-                value={formData.confirmPassword} 
-                onChange={handleChange} 
+                // Correction ici pour utiliser les bons états
+                value={confirmMdp} 
+                onChange={(e) => setConfirmMdp(e.target.value)} 
                 required
             />
           </div>
@@ -115,4 +130,4 @@ export default function Register()  {
       </div>
     </div>
   );
-};
+}

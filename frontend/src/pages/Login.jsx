@@ -17,7 +17,7 @@ export default  function Login(){
       const reponseBackend = await connectAuth(mail, mdp);
       login(reponseBackend.user);
       alert('Connexion réussie ! Bienvenue.');
-      navigate('/tournaments');
+      navigate('/');
     } catch (error) {
       alert('Erreur : Mauvais mail ou mot de passe.');
     }

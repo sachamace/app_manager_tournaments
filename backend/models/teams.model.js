@@ -15,14 +15,6 @@ const teamSchema = mongoose.Schema(
             type: String,
             required: true
         },
-        captain: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Players'
-        },
-        players: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Players'
-        }],
         matches: [{
             type: mongoose.Schema.Types.ObjectId,
             ref : 'Matches'
